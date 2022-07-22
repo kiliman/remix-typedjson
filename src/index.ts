@@ -26,7 +26,8 @@ function serialize(data: any) {
       value = entry.value[key]
     }
     let metaKey = `${keys[keys.length - 1]}${key}`
-    if (typeof value === 'object' && value !== null) {
+    const valueType = typeof value
+    if (valueType === 'object' && value !== null) {
       let count = 0
       let t = ''
       if (value instanceof Date) {
@@ -61,9 +62,23 @@ function serialize(data: any) {
       }
     }
     // handle non-object types
-    if (typeof value === 'bigint') {
+    if (valueType === 'bigint') {
       meta.set(metaKey, 'bigint')
       return String(value)
+    }
+    if (valueType === 'number') {
+      if (value === Number.POSITIVE_INFINITY) {
+        meta.set(metaKey, 'infinity')
+        return 'Infinity'
+      }
+      if (value === Number.NEGATIVE_INFINITY) {
+        meta.set(metaKey, '-infinity')
+        return '-Infinity'
+      }
+      if (Number.isNaN(value)) {
+        meta.set(metaKey, 'nan')
+        return 'NaN'
+      }
     }
     if (typeof value === 'undefined') {
       meta.set(metaKey, 'undefined')
@@ -123,6 +138,15 @@ function deserialize({
         break
       case 'undefined':
         result[key] = undefined
+        break
+      case 'infinity':
+        result[key] = Number.POSITIVE_INFINITY
+        break
+      case '-infinity':
+        result[key] = Number.NEGATIVE_INFINITY
+        break
+      case 'nan':
+        result[key] = NaN
         break
     }
   }
