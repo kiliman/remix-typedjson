@@ -111,7 +111,12 @@ function deserialize({
         result[key] = new Map(Object.entries(value))
         break
       case 'regexp':
-        result[key] = new RegExp(value)
+        const match = /^\/(.*)\/([dgimsuy]*)$/.exec(value)
+        if (match) {
+          result[key] = new RegExp(match[1], match[2])
+        } else {
+          throw new Error(`Invalid regexp: ${value}`)
+        }
         break
       case 'bigint':
         result[key] = BigInt(value)
