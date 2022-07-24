@@ -86,7 +86,7 @@ function serialize(data: any) {
     }
     return value
   }
-  var json = JSON.stringify(data, replacer, 2)
+  const json = JSON.stringify(data, replacer)
   return { json, meta: Object.fromEntries(meta.entries()) }
 }
 
