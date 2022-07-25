@@ -94,9 +94,13 @@ describe('serialize and deserialize', () => {
       e: new Error('epic fail'),
     }
     const { json, meta } = serialize(obj)
-    //console.log(json, meta)
-    const result = deserialize({ json, meta })
-    //console.log(result)
+    expect(json).toEqual(
+      JSON.stringify({
+        e: { name: 'Error', message: 'epic fail', stack: obj.e.stack },
+      }),
+    )
+    expect(meta).toEqual({ e: 'error' })
+    const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
   it('works for regex', () => {

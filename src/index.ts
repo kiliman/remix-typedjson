@@ -60,6 +60,11 @@ function serialize<T>(data: T): {
       } else if (value instanceof RegExp) {
         t = 'regexp'
         value = String(value)
+      } else if (value instanceof Error) {
+        t = 'error'
+        value = { name: value.name, message: value.message, stack: value.stack }
+        // push error value to stack
+        stack.push({ type: 'object', value, count: 3, iteration: 0 })
       } else {
         count = Object.keys(value).length
         t = 'object'
@@ -166,6 +171,12 @@ function deserialize<T>({
         break
       case 'nan':
         result[key] = NaN
+        break
+      case 'error':
+        const err = new Error(value.message)
+        err.name = value.name
+        err.stack = value.stack
+        result[key] = err
         break
     }
   }
