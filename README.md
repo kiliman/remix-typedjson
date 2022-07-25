@@ -37,7 +37,7 @@ v1.6.5+. You will also need to import the following replacement functions.
 
 ## `typedjson`
 
-Replacement for Remix `json` helper. It also supports the optional `Response Init`, so you can return headers, etc.
+Replacement for Remix `json` helper. It also supports the optional `ResponseInit`, so you can return headers, etc.
 
 Make sure your `loader` and `action` use the new declaration format:
 
@@ -52,6 +52,7 @@ Make sure your `loader` and `action` use the new declaration format:
 ```js
 return typedjson(
   { greeting: 'hello', today: new Date() },
+  // ResponseInit is option, just like the `json` helper
   { headers: { 'set-header': await commitSession(session) } },
 )
 ```
