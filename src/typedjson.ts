@@ -9,16 +9,14 @@ type NonJsonTypes =
   | '-infinity'
   | 'nan'
   | 'error'
+type MetaType = Record<string, NonJsonTypes>
 type EntryType = {
   type: NonJsonTypes | 'object'
   value: any
   count: number
   iteration: number
 }
-function serialize<T>(data: T): {
-  json?: string | null
-  meta?: Record<string, NonJsonTypes>
-} {
+function serialize<T>(data: T): TypeJsonResult | null {
   if (data === null) return { json: 'null' }
   if (data === undefined) return { json: undefined }
 
@@ -115,105 +113,90 @@ function serialize<T>(data: T): {
   }
 }
 
-function deserialize<T>({
-  json,
-  meta,
-}: {
-  json: string | null
-  meta?: Record<string, NonJsonTypes>
-}): T | null {
+function deserialize<T>({ json, meta }: TypeJsonResult): T | null {
   if (!json) return null
   const result = JSON.parse(json)
   if (meta) {
-    const keys = Object.keys(meta)
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i]
-      applyConversion(result, key.split('.'), meta[key])
-    }
+    applyMeta(result, meta)
+    return result as T
   }
+  return result as T
+}
+
+function applyMeta<T>(data: T, meta: MetaType) {
+  const keys = Object.keys(meta)
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i]
+    applyConversion(data, key.split('.'), meta[key])
+  }
+  return data
+
   function applyConversion(
-    result: any,
+    data: any,
     keys: string[],
     type: NonJsonTypes,
     depth: number = 0,
   ) {
     const key = keys[depth]
     if (depth < keys.length - 1) {
-      applyConversion(result[key], keys, type, depth + 1)
+      applyConversion(data[key], keys, type, depth + 1)
       return
     }
-    const value = result[key]
+    const value = data[key]
     switch (type) {
       case 'date':
-        result[key] = new Date(value)
+        data[key] = new Date(value)
         break
       case 'set':
-        result[key] = new Set(value)
+        data[key] = new Set(value)
         break
       case 'map':
-        result[key] = new Map(Object.entries(value))
+        data[key] = new Map(Object.entries(value))
         break
       case 'regexp':
         const match = /^\/(.*)\/([dgimsuy]*)$/.exec(value)
         if (match) {
-          result[key] = new RegExp(match[1], match[2])
+          data[key] = new RegExp(match[1], match[2])
         } else {
           throw new Error(`Invalid regexp: ${value}`)
         }
         break
       case 'bigint':
-        result[key] = BigInt(value)
+        data[key] = BigInt(value)
         break
       case 'undefined':
-        result[key] = undefined
+        data[key] = undefined
         break
       case 'infinity':
-        result[key] = Number.POSITIVE_INFINITY
+        data[key] = Number.POSITIVE_INFINITY
         break
       case '-infinity':
-        result[key] = Number.NEGATIVE_INFINITY
+        data[key] = Number.NEGATIVE_INFINITY
         break
       case 'nan':
-        result[key] = NaN
+        data[key] = NaN
         break
       case 'error':
         const err = new Error(value.message)
         err.name = value.name
         err.stack = value.stack
-        result[key] = err
+        data[key] = err
         break
     }
   }
-  return result as T
 }
 
+type TypeJsonResult = {
+  json?: string | null
+  meta?: MetaType
+}
 function stringify<T>(data: T) {
-  let { json, meta } = serialize(data)
-  if (json && meta) {
-    if (json.startsWith('{')) {
-      json = `${json.substring(0, json.length - 2)},"__meta__":${JSON.stringify(
-        meta,
-      )}}`
-    } else if (json.startsWith('[')) {
-      json = `{"__json__"":${json},"__meta__":${JSON.stringify(meta)}}`
-    }
-  }
-  return json
+  return JSON.stringify(serialize<T>(data))
 }
 
 function parse<T>(json: string) {
-  let data = JSON.parse(json)
-  if (data.__json__) {
-    // handle arrays wrapped in an object
-    return deserialize<T>({ json: data.__json__, meta: data.__meta__ })
-  } else if (data.__meta__) {
-    // handle json object with __meta__ key
-    // remove before sending to deserialize
-    const meta = data.__meta__
-    delete data.__meta__
-    return deserialize<T>({ json, meta })
-  }
-  return data
+  const result: TypeJsonResult | null = JSON.parse(json)
+  return result ? deserialize<T>(result) : null
 }
 
 const typedjson = {
@@ -221,7 +204,9 @@ const typedjson = {
   stringify,
   deserialize,
   parse,
+  applyMeta,
 }
 
-export { serialize, deserialize, stringify, parse }
+export { serialize, deserialize, stringify, parse, applyMeta }
+export type { MetaType, TypeJsonResult }
 export default typedjson
