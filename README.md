@@ -9,7 +9,7 @@
 This package is a replacement for [`superjson`](https://github.com/blitz-js/superjson) to use in your Remix app. It handles a subset
 of types that `superjson` supports, but is faster and smaller.
 
-Example site: https://https://remix-typedjson-example-production.up.railway.app/
+Example site: https://remix-typedjson-example-production.up.railway.app/
 
 Example repo: https://github.com/kiliman/remix-typedjson-example
 
