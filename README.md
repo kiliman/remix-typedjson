@@ -10,6 +10,7 @@ This package is a replacement for [`superjson`](https://github.com/blitz-js/supe
 of types that `superjson` supports, but is faster and smaller.
 
 Example site: https://https://remix-typedjson-example-production.up.railway.app/
+
 Example repo: https://github.com/kiliman/remix-typedjson-example
 
 The following types are supported:
