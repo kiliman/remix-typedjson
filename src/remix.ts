@@ -71,34 +71,33 @@ export function useTypedFetcher<T>(): TypedFetcherWithComponents<T> {
 }
 
 type RemixSerializedType<T> = {
-  __json__: string | null
+  __obj__: T | null
   __meta__?: MetaType | null
 } & (T | { __meta__?: MetaType })
 
-function stringifyRemix<T>(data: T) {
+export function stringifyRemix<T>(data: T) {
   // prevent double JSON stringification
   let { json, meta } = _typedjson.serialize(data) ?? {}
   if (json && meta) {
     if (json.startsWith('{')) {
       json = `${json.substring(
         0,
-        json.length - 2,
+        json.length - 1,
       )},\"__meta__\":${JSON.stringify(meta)}}`
     } else if (json.startsWith('[')) {
-      json = `{"__json__"":${json},"__meta__":${JSON.stringify(meta)}}`
+      json = `{"__obj__":${json},"__meta__":${JSON.stringify(meta)}}`
     }
   }
   return json
 }
 
-function deserializeRemix<T>(data: RemixSerializedType<T>): T | null {
+export function deserializeRemix<T>(data: RemixSerializedType<T>): T | null {
   if (!data) return data
-  if (data.__json__) {
+  if (data.__obj__) {
     // handle arrays wrapped in an object
-    return _typedjson.deserialize<T>({
-      json: data.__json__,
-      meta: data.__meta__ ?? undefined,
-    })
+    return data.__meta__
+      ? _typedjson.applyMeta<T>(data.__obj__, data.__meta__)
+      : data.__obj__
   } else if (data.__meta__) {
     // handle object with __meta__ key
     // remove before applying meta
