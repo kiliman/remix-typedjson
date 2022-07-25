@@ -15,6 +15,7 @@
   "license": "MIT",
   "files": [
     "dist/**/*.js",
+    "dist/**/*.d.ts",
     "README.md",
     "LICENSE.md",
     "CHANGELOG.md"
