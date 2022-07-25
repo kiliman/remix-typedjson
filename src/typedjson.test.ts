@@ -1,4 +1,4 @@
-import { deserialize, serialize } from './index'
+import { deserialize, serialize } from './typedjson'
 
 describe('serialize and deserialize', () => {
   it('works for objects', () => {
@@ -6,7 +6,7 @@ describe('serialize and deserialize', () => {
     const { json, meta } = serialize(obj)
     expect(json).toEqual(JSON.stringify(obj))
     expect(meta).toBeUndefined()
-    const result = deserialize<typeof obj>({ json, meta })
+    const result = deserialize<typeof obj>({ json: json!, meta })
     expect(result).toEqual(obj)
   })
   it('special case: objects with array-like keys', () => {
@@ -14,7 +14,7 @@ describe('serialize and deserialize', () => {
     const { json, meta } = serialize(obj)
     expect(json).toEqual(JSON.stringify(obj))
     expect(meta).toBeUndefined()
-    const result = deserialize<typeof obj>({ json, meta })
+    const result = deserialize<typeof obj>({ json: json!, meta })
     expect(result).toEqual(obj)
   })
   it('works for arrays', () => {
@@ -22,7 +22,7 @@ describe('serialize and deserialize', () => {
     const { json, meta } = serialize(obj)
     expect(json).toEqual(JSON.stringify(obj))
     expect(meta).toEqual({ '1': 'undefined' })
-    const result = deserialize<typeof obj>({ json, meta })
+    const result = deserialize<typeof obj>({ json: json!, meta })
     expect(result).toEqual(obj)
   })
   it('works for sets', () => {
@@ -33,7 +33,7 @@ describe('serialize and deserialize', () => {
     console.log({ json, meta })
     expect(json).toEqual('{"a":[1,null,2]}')
     expect(meta).toEqual({ a: 'set', 'a.1': 'undefined' })
-    const result = deserialize<typeof obj>({ json, meta })
+    const result = deserialize<typeof obj>({ json: json!, meta })
     console.log(result)
     expect(result).toEqual(obj)
   })
@@ -42,7 +42,7 @@ describe('serialize and deserialize', () => {
 
     const { json, meta } = serialize(obj)
     //console.log(json, meta)
-    const result = deserialize({ json, meta })
+    const result = deserialize({ json: json!, meta })
     //console.log(result)
     expect(result).toEqual(obj)
   })
@@ -57,7 +57,7 @@ describe('serialize and deserialize', () => {
     }
     const { json, meta } = serialize(obj)
     //console.log(json, meta)
-    const result = deserialize({ json, meta })
+    const result = deserialize({ json: json!, meta })
     //console.log(result)
     expect(result).toEqual(obj)
   })
@@ -69,7 +69,7 @@ describe('serialize and deserialize', () => {
     }
     const { json, meta } = serialize(obj)
     //console.log(json, meta)
-    const result = deserialize({ json, meta })
+    const result = deserialize({ json: json!, meta })
     //console.log(result)
     expect(result).toEqual(obj)
   })
@@ -81,7 +81,7 @@ describe('serialize and deserialize', () => {
     }
     const { json, meta } = serialize(obj)
     //console.log(json, meta)
-    const result = deserialize({ json, meta })
+    const result = deserialize({ json: json!, meta })
     //console.log(result)
     expect(result).toEqual(obj)
   })
@@ -92,9 +92,9 @@ describe('serialize and deserialize', () => {
       },
     }
     const { json, meta } = serialize(obj)
-    //console.log(json, meta)
-    const result = deserialize({ json, meta })
-    //console.log(result)
+    expect(json).toEqual(JSON.stringify(obj))
+    expect(meta).toEqual({ 'meeting.date': 'date' })
+    const result = deserialize<typeof obj>({ json: json!, meta })
     expect(result).toEqual(obj)
   })
   it('works for Errors', () => {
@@ -108,15 +108,15 @@ describe('serialize and deserialize', () => {
       }),
     )
     expect(meta).toEqual({ e: 'error' })
-    const result = deserialize<typeof obj>({ json, meta })
+    const result = deserialize<typeof obj>({ json: json!, meta })
     expect(result).toEqual(obj)
   })
   it('works for regex', () => {
     const obj = { a: /hello/g }
     const { json, meta } = serialize(obj)
-    //console.log(json, meta)
-    const result = deserialize({ json, meta })
-    //console.log(result)
+    expect(json).toEqual('{"a":"/hello/g"}')
+    expect(meta).toEqual({ a: 'regexp' })
+    const result = deserialize<typeof obj>({ json: json!, meta })
     expect(result).toEqual(obj)
   })
   it('works for Infinity', () => {
@@ -124,9 +124,9 @@ describe('serialize and deserialize', () => {
       a: Number.POSITIVE_INFINITY,
     }
     const { json, meta } = serialize(obj)
-    //console.log(json, meta)
-    const result = deserialize({ json, meta })
-    //console.log(result)
+    expect(json).toEqual('{"a":"Infinity"}')
+    expect(meta).toEqual({ a: 'infinity' })
+    const result = deserialize<typeof obj>({ json: json!, meta })
     expect(result).toEqual(obj)
   })
   it('works for -Infinity', () => {
@@ -134,17 +134,17 @@ describe('serialize and deserialize', () => {
       a: Number.NEGATIVE_INFINITY,
     }
     const { json, meta } = serialize(obj)
-    //console.log(json, meta)
-    const result = deserialize({ json, meta })
-    //console.log(result)
+    expect(json).toEqual('{"a":"-Infinity"}')
+    expect(meta).toEqual({ a: '-infinity' })
+    const result = deserialize<typeof obj>({ json: json!, meta })
     expect(result).toEqual(obj)
   })
   it('works for NaN', () => {
     const obj = { a: NaN }
     const { json, meta } = serialize(obj)
-    //console.log(json, meta)
-    const result = deserialize({ json, meta })
-    //console.log(result)
+    expect(json).toEqual('{"a":"NaN"}')
+    expect(meta).toEqual({ a: 'nan' })
+    const result = deserialize<typeof obj>({ json: json!, meta })
     expect(result).toEqual(obj)
   })
   it('works for BigInt', () => {
@@ -152,9 +152,9 @@ describe('serialize and deserialize', () => {
       a: BigInt('1021312312412312312313'),
     }
     const { json, meta } = serialize(obj)
-    //console.log(json, meta)
-    const result = deserialize({ json, meta })
-    //console.log(result)
+    expect(json).toEqual('{"a":"1021312312412312312313"}')
+    expect(meta).toEqual({ a: 'bigint' })
+    const result = deserialize<typeof obj>({ json: json!, meta })
     expect(result).toEqual(obj)
   })
 })

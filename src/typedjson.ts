@@ -16,9 +16,12 @@ type EntryType = {
   iteration: number
 }
 function serialize<T>(data: T): {
-  json: string
+  json?: string | null
   meta?: Record<string, NonJsonTypes>
 } {
+  if (data === null) return { json: 'null' }
+  if (data === undefined) return { json: undefined }
+
   const stack: EntryType[] = []
   const keys: string[] = ['']
   const meta = new Map()
@@ -116,9 +119,10 @@ function deserialize<T>({
   json,
   meta,
 }: {
-  json: string
+  json: string | null
   meta?: Record<string, NonJsonTypes>
-}): T {
+}): T | null {
+  if (!json) return null
   const result = JSON.parse(json)
   if (meta) {
     const keys = Object.keys(meta)
