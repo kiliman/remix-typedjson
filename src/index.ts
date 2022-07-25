@@ -1,10 +1,24 @@
+type NonJsonTypes =
+  | 'date'
+  | 'set'
+  | 'map'
+  | 'regexp'
+  | 'bigint'
+  | 'undefined'
+  | 'infinity'
+  | '-infinity'
+  | 'nan'
+  | 'error'
 type EntryType = {
-  type: string
+  type: NonJsonTypes | 'object'
   value: any
   count: number
   iteration: number
 }
-function serialize(data: any) {
+function serialize<T>(data: T): {
+  json: string
+  meta?: Record<string, NonJsonTypes>
+} {
   const stack: EntryType[] = []
   const keys: string[] = ['']
   const meta = new Map()
@@ -29,7 +43,7 @@ function serialize(data: any) {
     const valueType = typeof value
     if (valueType === 'object' && value !== null) {
       let count = 0
-      let t = ''
+      let t: NonJsonTypes | 'object' = 'undefined'
       if (value instanceof Date) {
         t = 'date'
         value = value.toISOString()
@@ -50,7 +64,7 @@ function serialize(data: any) {
         count = Object.keys(value).length
         t = 'object'
       }
-      if (t !== undefined && t !== 'object') {
+      if (t !== 'undefined' && t !== 'object') {
         meta.set(metaKey, t)
       }
       if (count !== 0) {
@@ -87,26 +101,31 @@ function serialize(data: any) {
     return value
   }
   const json = JSON.stringify(data, replacer)
-  return { json, meta: Object.fromEntries(meta.entries()) }
+  return {
+    json,
+    meta: meta.size === 0 ? undefined : Object.fromEntries(meta.entries()),
+  }
 }
 
-function deserialize({
+function deserialize<T>({
   json,
   meta,
 }: {
   json: string
-  meta: Record<string, string>
-}) {
+  meta?: Record<string, NonJsonTypes>
+}): T {
   const result = JSON.parse(json)
-  const keys = Object.keys(meta)
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i]
-    applyConversion(result, key.split('.'), meta[key])
+  if (meta) {
+    const keys = Object.keys(meta)
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i]
+      applyConversion(result, key.split('.'), meta[key])
+    }
   }
   function applyConversion(
     result: any,
     keys: string[],
-    type: string,
+    type: NonJsonTypes,
     depth: number = 0,
   ) {
     const key = keys[depth]
@@ -150,7 +169,7 @@ function deserialize({
         break
     }
   }
-  return result
+  return result as T
 }
 
 const typedjson = {
