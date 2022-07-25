@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 🚀 v0.0.5
+
+🐛 Fix stringifying/parsing Remix data and add tests
+
 ## 🚀 v0.0.4
 
 - 🐛 Fix Remix stringification of `__meta__`
