@@ -187,9 +187,41 @@ function deserialize<T>({
   return result as T
 }
 
+function stringify<T>(data: T) {
+  let { json, meta } = serialize(data)
+  if (json && meta) {
+    if (json.startsWith('{')) {
+      json = `${json.substring(0, json.length - 2)},"__meta__":${JSON.stringify(
+        meta,
+      )}}`
+    } else if (json.startsWith('[')) {
+      json = `{"__json__"":${json},"__meta__":${JSON.stringify(meta)}}`
+    }
+  }
+  return json
+}
+
+function parse<T>(json: string) {
+  let data = JSON.parse(json)
+  if (data.__json__) {
+    // handle arrays wrapped in an object
+    return deserialize<T>({ json: data.__json__, meta: data.__meta__ })
+  } else if (data.__meta__) {
+    // handle json object with __meta__ key
+    // remove before sending to deserialize
+    const meta = data.__meta__
+    delete data.__meta__
+    return deserialize<T>({ json, meta })
+  }
+  return data
+}
+
 const typedjson = {
   serialize,
+  stringify,
   deserialize,
+  parse,
 }
-export { serialize, deserialize }
+
+export { serialize, deserialize, stringify, parse }
 export default typedjson
