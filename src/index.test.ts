@@ -4,19 +4,25 @@ describe('serialize and deserialize', () => {
   it('works for objects', () => {
     const obj = { 1: 5, 2: { 3: 'c' } }
     const { json, meta } = serialize(obj)
-    const result = deserialize({ json, meta })
+    expect(json).toEqual(JSON.stringify(obj))
+    expect(meta).toBeUndefined()
+    const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
   it('special case: objects with array-like keys', () => {
     const obj = { 0: 3, 1: 5, 2: { 3: 'c' } }
     const { json, meta } = serialize(obj)
-    const result = deserialize({ json, meta })
+    expect(json).toEqual(JSON.stringify(obj))
+    expect(meta).toBeUndefined()
+    const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
   it('works for arrays', () => {
     const obj = [1, undefined, 2]
     const { json, meta } = serialize(obj)
-    const result = deserialize({ json, meta })
+    expect(json).toEqual(JSON.stringify(obj))
+    expect(meta).toEqual({ '1': 'undefined' })
+    const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
   it('works for sets', () => {
@@ -24,9 +30,11 @@ describe('serialize and deserialize', () => {
       a: new Set([1, undefined, 2]),
     }
     const { json, meta } = serialize(obj)
-    //console.log(json, meta)
-    const result = deserialize({ json, meta })
-    //console.log(result)
+    console.log({ json, meta })
+    expect(json).toEqual('{"a":[1,null,2]}')
+    expect(meta).toEqual({ a: 'set', 'a.1': 'undefined' })
+    const result = deserialize<typeof obj>({ json, meta })
+    console.log(result)
     expect(result).toEqual(obj)
   })
   it('works for top-level Sets', () => {
