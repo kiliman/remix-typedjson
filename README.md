@@ -52,7 +52,7 @@ Make sure your `loader` and `action` use the new declaration format:
 ```js
 return typedjson(
   { greeting: 'hello', today: new Date() },
-  // ResponseInit is option, just like the `json` helper
+  // ResponseInit is optional, just like the `json` helper
   { headers: { 'set-header': await commitSession(session) } },
 )
 ```
