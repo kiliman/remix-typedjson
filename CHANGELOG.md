@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 🚀 v0.0.4
+
+- 🐛 Fix Remix stringification of `__meta__`
+
 ## 🚀 v0.0.3
 
 - 🔨 Include `*.d.ts` files in package
