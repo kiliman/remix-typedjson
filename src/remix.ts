@@ -1,4 +1,10 @@
-import { useActionData, useLoaderData } from '@remix-run/react'
+import {
+  useActionData,
+  useFetcher,
+  useLoaderData,
+  type FetcherWithComponents,
+} from '@remix-run/react'
+import type { MetaType } from './typedjson'
 import * as _typedjson from './typedjson'
 
 export type TypedJsonFunction = <Data extends unknown>(
@@ -29,21 +35,77 @@ export const typedjson: TypedJsonFunction = (data, init = {}) => {
   if (!headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json; charset=utf-8')
   }
-  return new Response(_typedjson.stringify(data), {
+  return new Response(stringifyRemix(data), {
     ...responseInit,
     headers,
   }) as TypedJsonResponse<typeof data>
 }
 
+type TypeJsonResult<T> = UseDataFunctionReturn<T>
+
 export function useTypedLoaderData<T = AppData>(): UseDataFunctionReturn<T> {
   const data = useLoaderData()
-  return _typedjson.parse<T>(data)
+  return deserializeRemix<T>(
+    data as RemixSerializedType<T>,
+  ) as UseDataFunctionReturn<T>
 }
 export function useTypedActionData<
   T = AppData,
 >(): UseDataFunctionReturn<T> | null {
   const data = useActionData()
-  return _typedjson.parse<T>(data)
+  return deserializeRemix<T>(
+    data as RemixSerializedType<T>,
+  ) as UseDataFunctionReturn<T> | null
+}
+
+type TypedFetcherWithComponents<T> = Omit<FetcherWithComponents<T>, 'data'> & {
+  data: TypeJsonResult<T>
+}
+export function useTypedFetcher<T>(): TypedFetcherWithComponents<T> {
+  const fetcher = useFetcher<T>()
+  if (fetcher.data) {
+    const newData = deserializeRemix<T>(fetcher.data as RemixSerializedType<T>)
+    fetcher.data = newData ?? undefined
+  }
+  return fetcher as TypedFetcherWithComponents<T>
+}
+
+type RemixSerializedType<T> = {
+  __json__: string | null
+  __meta__?: MetaType | null
+} & (T | { __meta__?: MetaType })
+
+function stringifyRemix<T>(data: T) {
+  // prevent double JSON stringification
+  let { json, meta } = _typedjson.serialize(data) ?? {}
+  if (json && meta) {
+    if (json.startsWith('{')) {
+      json = `${json.substring(0, json.length - 2)},"__meta__":${JSON.stringify(
+        meta,
+      )}}`
+    } else if (json.startsWith('[')) {
+      json = `{"__json__"":${json},"__meta__":${JSON.stringify(meta)}}`
+    }
+  }
+  return json
+}
+
+function deserializeRemix<T>(data: RemixSerializedType<T>): T | null {
+  if (!data) return data
+  if (data.__json__) {
+    // handle arrays wrapped in an object
+    return _typedjson.deserialize<T>({
+      json: data.__json__,
+      meta: data.__meta__ ?? undefined,
+    })
+  } else if (data.__meta__) {
+    // handle object with __meta__ key
+    // remove before applying meta
+    const meta = data.__meta__
+    delete data.__meta__
+    return _typedjson.applyMeta<T>(data as T, meta)
+  }
+  return data as T
 }
 
 export type RedirectFunction = (
