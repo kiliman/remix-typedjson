@@ -80,9 +80,10 @@ function stringifyRemix<T>(data: T) {
   let { json, meta } = _typedjson.serialize(data) ?? {}
   if (json && meta) {
     if (json.startsWith('{')) {
-      json = `${json.substring(0, json.length - 2)},"__meta__":${JSON.stringify(
-        meta,
-      )}}`
+      json = `${json.substring(
+        0,
+        json.length - 2,
+      )},\"__meta__\":${JSON.stringify(meta)}}`
     } else if (json.startsWith('[')) {
       json = `{"__json__"":${json},"__meta__":${JSON.stringify(meta)}}`
     }
