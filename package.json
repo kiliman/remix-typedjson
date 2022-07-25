@@ -52,5 +52,8 @@
   "jest": {
     "preset": "ts-jest/presets/default-esm",
     "testEnvironment": "jsdom"
+  },
+  "peeDependencies": {
+    "@remix-run/react": "^1.6.5"
   }
 }
