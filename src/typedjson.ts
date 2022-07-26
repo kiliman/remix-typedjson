@@ -16,7 +16,7 @@ type EntryType = {
   count: number
   iteration: number
 }
-function serialize<T>(data: T): TypeJsonResult | null {
+function serialize<T>(data: T): TypedJsonResult | null {
   if (data === null) return { json: 'null' }
   if (data === undefined) return { json: undefined }
 
@@ -113,7 +113,7 @@ function serialize<T>(data: T): TypeJsonResult | null {
   }
 }
 
-function deserialize<T>({ json, meta }: TypeJsonResult): T | null {
+function deserialize<T>({ json, meta }: TypedJsonResult): T | null {
   if (!json) return null
   const result = JSON.parse(json)
   if (meta) {
@@ -186,7 +186,7 @@ function applyMeta<T>(data: T, meta: MetaType) {
   }
 }
 
-type TypeJsonResult = {
+type TypedJsonResult = {
   json?: string | null
   meta?: MetaType
 }
@@ -195,7 +195,7 @@ function stringify<T>(data: T) {
 }
 
 function parse<T>(json: string) {
-  const result: TypeJsonResult | null = JSON.parse(json)
+  const result: TypedJsonResult | null = JSON.parse(json)
   return result ? deserialize<T>(result) : null
 }
 
@@ -208,5 +208,5 @@ const typedjson = {
 }
 
 export { serialize, deserialize, stringify, parse, applyMeta }
-export type { MetaType, TypeJsonResult }
+export type { MetaType, TypedJsonResult }
 export default typedjson
