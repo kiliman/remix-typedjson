@@ -181,4 +181,7 @@ describe('serialize and deserialize', () => {
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
+  it('works for undefined', () => {
+    expect(deserialize(serialize(undefined)!)).toBeUndefined()
+  })
 })
