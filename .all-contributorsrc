@@ -27,6 +27,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Skn0tt",
+      "name": "Simon Knott",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14912729?v=4",
+      "profile": "https://github.com/Skn0tt",
+      "contributions": [
+        "code",
+        "bug",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
