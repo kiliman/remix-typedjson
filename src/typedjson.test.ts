@@ -9,6 +9,14 @@ describe('serialize and deserialize', () => {
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
+  it('works for nested arrays', () => {
+    const obj = { data: [{ greeting: 'hello', today: new Date() }] }
+    const { json, meta } = serialize(obj) ?? {}
+    expect(json).toEqual(JSON.stringify(obj))
+    expect(meta).toEqual({ 'data.0.today': 'date' })
+    const result = deserialize<typeof obj>({ json, meta })
+    expect(result).toEqual(obj)
+  })
   it('special case: objects with array-like keys', () => {
     const obj = { 0: 3, 1: 5, 2: { 3: 'c' } }
     const { json, meta } = serialize(obj) ?? {}

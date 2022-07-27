@@ -9,7 +9,6 @@ describe('stringify Remix data', () => {
   it('works for objects with meta', () => {
     const obj = { message: 'hello', date: new Date(Date.UTC(2020, 0, 1)) }
     const json = stringifyRemix(obj)
-    const parsed = JSON.parse(json!)
     expect(json).toEqual(
       '{"message":"hello","date":"2020-01-01T00:00:00.000Z","__meta__":{"date":"date"}}',
     )
@@ -37,6 +36,24 @@ describe('deserialize Remix data', () => {
   })
   it('works for objects with meta', () => {
     const obj = { message: 'hello', date: new Date(Date.UTC(2020, 0, 1)) }
+    const json = stringifyRemix(obj)
+    const parsed = JSON.parse(json!)
+    const data = deserializeRemix(parsed)
+    expect(data).toEqual(obj)
+  })
+  it('works for nested objects with meta', () => {
+    const obj = {
+      data: { message: 'hello', date: new Date(Date.UTC(2020, 0, 1)) },
+    }
+    const json = stringifyRemix(obj)
+    const parsed = JSON.parse(json!)
+    const data = deserializeRemix(parsed)
+    expect(data).toEqual(obj)
+  })
+  it('works for nested arrays with meta', () => {
+    const obj = {
+      data: [{ message: 'hello', date: new Date(Date.UTC(2020, 0, 1)) }],
+    }
     const json = stringifyRemix(obj)
     const parsed = JSON.parse(json!)
     const data = deserializeRemix(parsed)

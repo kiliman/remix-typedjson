@@ -57,6 +57,7 @@ function serialize<T>(data: T): TypedJsonResult | null {
         count = Object.keys(value).length
         t = 'map'
       } else if (value instanceof Array) {
+        t = 'object'
         count = value.length
       } else if (value instanceof RegExp) {
         t = 'regexp'
@@ -70,7 +71,7 @@ function serialize<T>(data: T): TypedJsonResult | null {
         count = Object.keys(value).length
         t = 'object'
       }
-      if (t !== 'undefined' && t !== 'object') {
+      if (t !== 'object') {
         meta.set(metaKey, t)
       }
       if (count !== 0) {
