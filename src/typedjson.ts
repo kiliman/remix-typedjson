@@ -24,19 +24,20 @@ function serialize<T>(data: T): TypedJsonResult | null {
   const keys: string[] = ['']
   const meta = new Map()
   function replacer(key: string, value: any) {
-    let entry: EntryType | undefined
-    if (stack.length) {
-      entry = stack[stack.length - 1]
-      entry.iteration++
-      if (entry.iteration > entry.count) {
-        if (entry.type === 'object') {
+    function unwindStack() {
+      while (stack.length > 0) {
+        const top = stack[stack.length - 1]
+        if (top.iteration < top.count) {
+          top.iteration++
+          return top
+        }
+        if (top.type === 'object') {
           keys.pop()
         }
         stack.pop()
-        entry = stack[stack.length - 1]
-        entry.iteration++
       }
     }
+    let entry = unwindStack()
     if (entry) {
       value = entry.value[key]
     }

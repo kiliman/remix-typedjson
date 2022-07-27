@@ -10,7 +10,7 @@ describe('serialize and deserialize', () => {
     expect(result).toEqual(obj)
   })
   it('works for nested arrays', () => {
-    const obj = { data: [{ greeting: 'hello', today: new Date() }] }
+    const obj = { data: [{ greeting: 'hello', today: new Date() }], counter: 1 }
     const { json, meta } = serialize(obj) ?? {}
     expect(json).toEqual(JSON.stringify(obj))
     expect(meta).toEqual({ 'data.0.today': 'date' })
