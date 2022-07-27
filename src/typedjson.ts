@@ -114,6 +114,9 @@ function serialize<T>(data: T): TypedJsonResult | null {
 }
 
 function deserialize<T>({ json, meta }: TypedJsonResult): T | null {
+  if (typeof json === 'undefined') {
+    return undefined as unknown as T
+  }
   if (!json) return null
   const result = JSON.parse(json)
   if (meta) {
