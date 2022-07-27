@@ -77,7 +77,7 @@ type RemixSerializedType<T> = {
 
 export function stringifyRemix<T>(data: T) {
   // prevent double JSON stringification
-  let { json, meta } = _typedjson.serialize(data) ?? {}
+  let { json, meta } = _typedjson.serialize(data)
   if (json && meta) {
     if (json.startsWith('{')) {
       json = `${json.substring(

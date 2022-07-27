@@ -16,7 +16,7 @@ type EntryType = {
   count: number
   iteration: number
 }
-function serialize<T>(data: T): TypedJsonResult | null {
+function serialize<T>(data: T): TypedJsonResult {
   if (data === null) return { json: 'null' }
   if (data === undefined) return { json: undefined }
 
