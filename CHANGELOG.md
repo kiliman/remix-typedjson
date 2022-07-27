@@ -2,8 +2,8 @@
 
 ## 🚀 v0.0.7
 
-- 🐛 Correctly deserialize `undefined` [#3](https://github.com/kiliman/remix-typedjson/issues/3)
-- 🐛Fix serialize meta of nested arrays [#2](https://github.com/kiliman/remix-typedjson/issues/2)
+- 🐛 Correctly deserialize `undefined` [#3](https://github.com/kiliman/remix-typedjson/pull/3)
+- 🐛 Fix serialize meta of nested arrays [#2](https://github.com/kiliman/remix-typedjson/issues/2)
 
 ## 🚀 v0.0.6
 
