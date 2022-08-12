@@ -195,7 +195,16 @@ type TypedJsonResult = {
   json?: string | null
   meta?: MetaType
 }
-function stringify<T>(data: T) {
+type StrigifyParameters = Parameters<typeof JSON.stringify>
+function stringify<T>(data: T, replacer?: StrigifyParameters[1], space?: StrigifyParameters[2]) {
+  if (replacer || space) {
+    const { json, meta } = serialize<T>(data)
+    const jsonObj = deserialize({ json })
+    return JSON.stringify({
+      json: jsonObj,
+      meta,
+    }, replacer, space)
+  }
   return JSON.stringify(serialize<T>(data))
 }
 

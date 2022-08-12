@@ -1,4 +1,4 @@
-import { deserialize, serialize } from './typedjson'
+import { deserialize, serialize, stringify } from './typedjson'
 
 describe('serialize and deserialize', () => {
   it('works for objects', () => {
@@ -191,5 +191,40 @@ describe('serialize and deserialize', () => {
   })
   it('works for undefined', () => {
     expect(deserialize(serialize(undefined)!)).toBeUndefined()
+  })
+
+  it.only('works for serialize output arguments', () => {
+    const test = {
+      bi: BigInt('1021312312412312312313'),
+      nan: NaN,
+      inf: {
+        P: Number.POSITIVE_INFINITY,
+        N: Number.NEGATIVE_INFINITY,
+      },
+      d: new Date(Date.UTC(1979, 0, 10))
+    }
+
+    const strStd = stringify(test)
+    const strDbg = stringify(test, null, 2)
+
+    expect(strStd).toBe("{\"json\":\"{\\\"bi\\\":\\\"1021312312412312312313\\\",\\\"nan\\\":\\\"NaN\\\",\\\"inf\\\":{\\\"P\\\":\\\"Infinity\\\",\\\"N\\\":\\\"-Infinity\\\"},\\\"d\\\":\\\"1979-01-10T00:00:00.000Z\\\"}\",\"meta\":{\"bi\":\"bigint\",\"nan\":\"nan\",\"inf.P\":\"infinity\",\"inf.N\":\"-infinity\",\"d\":\"date\"}}")
+    expect(strDbg).toBe(`{
+  "json": {
+    "bi": "1021312312412312312313",
+    "nan": "NaN",
+    "inf": {
+      "P": "Infinity",
+      "N": "-Infinity"
+    },
+    "d": "1979-01-10T00:00:00.000Z"
+  },
+  "meta": {
+    "bi": "bigint",
+    "nan": "nan",
+    "inf.P": "infinity",
+    "inf.N": "-infinity",
+    "d": "date"
+  }
+}`)
   })
 })
