@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 🚀 v0.0.8
+
+- 🐛 Fix stack unwinding resulting in incorrect meta [#4](https://github.com/kiliman/remix-typedjson/issues/4)
+- 🔨 Update `serialize` return value to always return `TypedJsonResult`
+
 ## 🚀 v0.0.7
 
 - 🐛 Correctly deserialize `undefined` [#3](https://github.com/kiliman/remix-typedjson/pull/3)
