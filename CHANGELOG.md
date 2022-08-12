@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 🚀 v0.0.9
+
+✨ Handle JSON.stringify standard arguments [#8](https://github.com/kiliman/remix-typedjson/pull/9)
+
 ## 🚀 v0.0.8
 
 - 🐛 Fix stack unwinding resulting in incorrect meta [#4](https://github.com/kiliman/remix-typedjson/issues/4)
