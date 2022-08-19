@@ -1,8 +1,14 @@
 # CHANGELOG
 
+## 🚀 v0.1.0
+
+- ✨ Add `TypedMetaFunction` support [#6](https://github.com/kiliman/remix-typedjson/issue/6)
+
+- 🐛 Fix peer dependencies [#7](https://github.com/kiliman/remix-typedjson/issues/7)
+
 ## 🚀 v0.0.9
 
-✨ Handle JSON.stringify standard arguments [#8](https://github.com/kiliman/remix-typedjson/pull/9)
+- ✨ Handle JSON.stringify standard arguments [#8](https://github.com/kiliman/remix-typedjson/pull/9)
 
 ## 🚀 v0.0.8
 
