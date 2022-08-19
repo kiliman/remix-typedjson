@@ -1,7 +1,9 @@
 # remix-typedjson
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 This package is a replacement for [`superjson`](https://github.com/blitz-js/superjson) to use in your Remix app. It handles a subset
@@ -96,6 +98,44 @@ fetcher.data // data property is fully typed
 In order to return a `redirect`, you will need to import the `redirect` function from this package, in order for the type inference to work properly.
 
 However, you can also `throw redirect()` and you can use the original `redirect` function from Remix.
+
+## `TypedMetaFunction`
+
+You can now get typed arguments for both `data` and `parentsData` from your `meta`
+function export. Based on [new feature coming to Remix](https://github.com/remix-run/remix/pull/4022)
+
+```js
+export const meta: TypedMetaFunction<typeof loader> = ({ data }) => {
+  return {
+    title: `Posts | ${data?.post.title}`,
+  }
+}
+// for parentsData, you can specify a Record of typed loaders keyed by route id
+// root.tsx
+export LoaderType = typeof loader
+// routes/parent.tsx
+export LoaderType = typeof loader
+// routes/child.tsx
+import { type LoaderType as RootLoaderType } from '~/root'
+import { type LoaderType as ParentLoaderType } from '~/routes/parent'
+
+export const meta: TypedMetaFunction<
+  typeof loader,
+  // parent loader types keyed by route id
+  {
+    'root': RootLoader
+    'routes/parent': ParentLoader
+  }
+> = ({ data, parentsData }) => {
+  // access typed parent data by route id
+  const rootData = parentsData['root']
+  const parentData = parentsData['routes/parent']
+
+  return {
+    title: `Posts | ${data?.post.title}`,
+  }
+}
+```
 
 ## 😍 Contributors
 

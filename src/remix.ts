@@ -1,9 +1,12 @@
 import {
+  HtmlMetaDescriptor,
+  Params,
   useActionData,
   useFetcher,
   useLoaderData,
   type FetcherWithComponents,
 } from '@remix-run/react'
+
 import type { MetaType } from './typedjson'
 import * as _typedjson from './typedjson'
 
@@ -16,11 +19,17 @@ export declare type TypedJsonResponse<T extends unknown = unknown> =
   Response & {
     typedjson(): Promise<T>
   }
-
+export interface AppLoadContext {
+  [key: string]: unknown
+}
 type AppData = any
 type DataFunction = (...args: any[]) => unknown // matches any function
 type DataOrFunction = AppData | DataFunction
-
+export interface DataFunctionArgs {
+  request: Request
+  context: AppLoadContext
+  params: Params
+}
 export type UseDataFunctionReturn<T extends DataOrFunction> = T extends (
   ...args: any[]
 ) => infer Output
@@ -134,4 +143,30 @@ export const redirect: RedirectFunction = (url, init = 302) => {
     ...responseInit,
     headers,
   }) as TypedJsonResponse<never>
+}
+export interface RouteData {
+  [routeId: string]: AppData
+}
+
+export interface LoaderFunction {
+  (args: DataFunctionArgs):
+    | Promise<Response>
+    | Response
+    | Promise<AppData>
+    | AppData
+}
+export interface TypedMetaFunction<
+  Loader extends LoaderFunction | unknown = unknown,
+  ParentsLoaders extends Record<string, LoaderFunction> = {},
+> {
+  (args: {
+    data: Loader extends LoaderFunction
+      ? UseDataFunctionReturn<Loader>
+      : AppData
+    parentsData: {
+      [k in keyof ParentsLoaders]: UseDataFunctionReturn<ParentsLoaders[k]>
+    } & RouteData
+    params: Params
+    location: Location
+  }): HtmlMetaDescriptor
 }
