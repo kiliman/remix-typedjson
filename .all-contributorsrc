@@ -48,6 +48,15 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "ProdByGR",
+      "name": "Gregori Rivas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29157049?v=4",
+      "profile": "https://github.com/ProdByGR",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
