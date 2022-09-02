@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 🚀 v0.1.1
+
+- 🔨 Update peer dependencies for React 18 [#9](https://github.com/kiliman/remix-typedjson/pull/9)
+
 ## 🚀 v0.1.0
 
 - ✨ Add `TypedMetaFunction` support [#6](https://github.com/kiliman/remix-typedjson/issue/6)
