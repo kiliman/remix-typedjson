@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 🚀 v0.1.2
+
+- 🔨 Export TypedJsonResponse type [#10](https://github.com/kiliman/remix-typedjson/issues/10)
+
 ## 🚀 v0.1.1
 
 - 🔨 Update peer dependencies for React 18 [#9](https://github.com/kiliman/remix-typedjson/pull/9)
