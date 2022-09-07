@@ -7,7 +7,7 @@ export {
   useTypedFetcher,
   useTypedLoaderData,
 } from './remix'
-export type { TypedMetaFunction } from './remix'
+export type { TypedJsonResponse, TypedMetaFunction } from './remix'
 export {
   applyMeta,
   deserialize,
