@@ -50,8 +50,6 @@ export const typedjson: TypedJsonFunction = (data, init = {}) => {
   }) as TypedJsonResponse<typeof data>
 }
 
-type TypeJsonResult<T> = UseDataFunctionReturn<T>
-
 export function useTypedLoaderData<T = AppData>(): UseDataFunctionReturn<T> {
   const data = useLoaderData()
   return deserializeRemix<T>(
@@ -68,7 +66,7 @@ export function useTypedActionData<
 }
 
 type TypedFetcherWithComponents<T> = Omit<FetcherWithComponents<T>, 'data'> & {
-  data: TypeJsonResult<T>
+  data: UseDataFunctionReturn<T>
 }
 export function useTypedFetcher<T>(): TypedFetcherWithComponents<T> {
   const fetcher = useFetcher<T>()
