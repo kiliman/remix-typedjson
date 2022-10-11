@@ -123,7 +123,6 @@ function deserialize<T>({ json, meta }: TypedJsonResult): T | null {
   const result = JSON.parse(json)
   if (meta) {
     applyMeta(result, meta)
-    return result as T
   }
   return result as T
 }
