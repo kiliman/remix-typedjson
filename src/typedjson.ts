@@ -123,15 +123,12 @@ function deserialize<T>({ json, meta }: TypedJsonResult): T | null {
   const result = JSON.parse(json)
   if (meta) {
     applyMeta(result, meta)
-    return result as T
   }
   return result as T
 }
 
 function applyMeta<T>(data: T, meta: MetaType) {
-  const keys = Object.keys(meta)
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i]
+  for (const key of Object.keys(meta)) {
     applyConversion(data, key.split('.'), meta[key])
   }
   return data
