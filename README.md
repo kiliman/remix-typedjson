@@ -37,6 +37,11 @@ v1.6.5+. You will also need to import the following replacement functions.
 
 ## `typedjson`
 
+### Installation
+```bash
+npm i remix-typedjson
+```
+
 Replacement for Remix `json` helper. It also supports the optional `ResponseInit`, so you can return headers, etc.
 
 Make sure your `loader` and `action` use the new declaration format:
