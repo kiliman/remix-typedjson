@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 🚀 v0.1.3
+
+- 📦 Fixup package versions
+
 ## 🚀 v0.1.2
 
 - 🔨 Export TypedJsonResponse type [#10](https://github.com/kiliman/remix-typedjson/issues/10)
