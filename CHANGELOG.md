@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 🚀 v0.1.4
+
+- 🔥 Remove `importHelpers: true` in tsconfig.json
+
 ## 🚀 v0.1.3
 
 - 📦 Fixup package versions
