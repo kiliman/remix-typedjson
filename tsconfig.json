@@ -9,8 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "declaration": true,
-    "jsx": "react-jsx",
-    "importHelpers": true
+    "jsx": "react-jsx"
   },
   "exclude": ["node_modules"],
   "include": ["src/**/*.ts", "src/**/*.tsx"]
