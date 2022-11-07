@@ -75,6 +75,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "joelazar",
+      "name": "Jozsef Lazar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16268238?v=4",
+      "profile": "https://github.com/joelazar",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
