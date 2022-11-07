@@ -65,7 +65,10 @@ export function useTypedActionData<
   ) as UseDataFunctionReturn<T> | null
 }
 
-type TypedFetcherWithComponents<T> = Omit<FetcherWithComponents<T>, 'data'> & {
+export type TypedFetcherWithComponents<T> = Omit<
+  FetcherWithComponents<T>,
+  'data'
+> & {
   data: UseDataFunctionReturn<T>
 }
 export function useTypedFetcher<T>(): TypedFetcherWithComponents<T> {
