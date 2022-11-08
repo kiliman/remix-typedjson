@@ -30,7 +30,7 @@
     "test": "jest",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "prestart": "npm run build",
     "start": "node dist/cli.js"
   },
