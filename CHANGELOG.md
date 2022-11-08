@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 🚀 v0.1.6
+
+📦 - Republish package due to incorrect build
+
 ## 🚀 v0.1.5
 
 - 🔨 Export TypedFetcherWithComponents type [#17](https://github.com/kiliman/remix-typedjson/pull/17)
