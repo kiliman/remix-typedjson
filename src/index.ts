@@ -11,6 +11,7 @@ export type {
   TypedJsonResponse,
   TypedMetaFunction,
   TypedFetcherWithComponents,
+  UseDataFunctionReturn
 } from './remix'
 export {
   applyMeta,
