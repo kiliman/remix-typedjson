@@ -80,7 +80,7 @@ export function useTypedFetcher<T>(): TypedFetcherWithComponents<T> {
   return fetcher as TypedFetcherWithComponents<T>
 }
 
-type RemixSerializedType<T> = {
+export type RemixSerializedType<T> = {
   __obj__: T | null
   __meta__?: MetaType | null
 } & (T | { __meta__?: MetaType })
