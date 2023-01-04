@@ -6,8 +6,10 @@ export {
   useTypedActionData,
   useTypedFetcher,
   useTypedLoaderData,
+  
 } from './remix'
 export type {
+  RemixSerializedType,
   TypedJsonResponse,
   TypedMetaFunction,
   TypedFetcherWithComponents,
