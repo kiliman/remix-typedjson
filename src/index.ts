@@ -6,14 +6,14 @@ export {
   useTypedActionData,
   useTypedFetcher,
   useTypedLoaderData,
-  
+  useTypedRouteLoaderData,
 } from './remix'
 export type {
   RemixSerializedType,
+  TypedFetcherWithComponents,
   TypedJsonResponse,
   TypedMetaFunction,
-  TypedFetcherWithComponents,
-  UseDataFunctionReturn
+  UseDataFunctionReturn,
 } from './remix'
 export {
   applyMeta,

@@ -4,6 +4,7 @@ import {
   useActionData,
   useFetcher,
   useLoaderData,
+  useMatches,
   type FetcherWithComponents,
 } from '@remix-run/react'
 
@@ -78,6 +79,16 @@ export function useTypedFetcher<T>(): TypedFetcherWithComponents<T> {
     fetcher.data = newData ?? undefined
   }
   return fetcher as TypedFetcherWithComponents<T>
+}
+
+export function useTypedRouteLoaderData<T = AppData>(
+  id: string,
+): UseDataFunctionReturn<T> | undefined {
+  const match = useMatches().find(match => match.id === id)
+  if (!match) return undefined
+  return deserializeRemix<T>(match.data as RemixSerializedType<T>) as
+    | UseDataFunctionReturn<T>
+    | undefined
 }
 
 export type RemixSerializedType<T> = {
