@@ -84,6 +84,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "lukebowerman",
+      "name": "Luke Bowerman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19156294?v=4",
+      "profile": "https://github.com/lukebowerman",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
