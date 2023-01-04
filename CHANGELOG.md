@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 🚀 v0.1.7
+
+- ✨ Add useTypedRouteLoaderData
+- 🔨 Export UseDataFunctionReturn & RemixSerializedType types [#19](https://github.com/kiliman/remix-typedjson/pull/19)
+
 ## 🚀 v0.1.6
 
 📦 - Republish package due to incorrect build
@@ -7,7 +12,6 @@
 ## 🚀 v0.1.5
 
 - 🔨 Export TypedFetcherWithComponents type [#17](https://github.com/kiliman/remix-typedjson/pull/17)
--
 
 ## 🚀 v0.1.4
 

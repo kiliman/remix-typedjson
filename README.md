@@ -1,7 +1,9 @@
 # remix-typedjson
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 This package is a replacement for [`superjson`](https://github.com/blitz-js/superjson) to use in your Remix app. It handles a subset
@@ -38,6 +40,7 @@ v1.6.5+. You will also need to import the following replacement functions.
 ## `typedjson`
 
 ### Installation
+
 ```bash
 npm i remix-typedjson
 ```
@@ -82,6 +85,18 @@ get the correct type inference.
 
 ```js
 const actionData = useTypedActionData<typeof action>()
+```
+
+## `useTypedRouteLoaderData`
+
+Helper for `useMatches` that returns the route data based on provided route `id`
+
+### Usage
+
+```ts
+import { loader as rootLoader } from '~/root'
+
+const rootData = useTypedRouteLoaderData<typeof rootLoader>('root')
 ```
 
 ## `useTypedFetcher`
