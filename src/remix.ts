@@ -1,7 +1,9 @@
 import {
   HtmlMetaDescriptor,
   Params,
+  ThrownResponse,
   useActionData,
+  useCatch,
   useFetcher,
   useLoaderData,
   useMatches,
@@ -64,6 +66,17 @@ export function useTypedActionData<
   return deserializeRemix<T>(
     data as RemixSerializedType<T>,
   ) as UseDataFunctionReturn<T> | null
+}
+export function useTypedCatch<
+  Result extends ThrownResponse = ThrownResponse,
+>(): Result {
+  const caught = useCatch<
+    Omit<Result, `data`> & { data: RemixSerializedType<Result[`data`]> }
+  >()
+  return {
+    ...caught,
+    data: deserializeRemix<Result[`data`]>(caught.data),
+  } as Result
 }
 
 export type TypedFetcherWithComponents<T> = Omit<
