@@ -87,6 +87,16 @@ get the correct type inference.
 const actionData = useTypedActionData<typeof action>()
 ```
 
+## `useTypedCatch`
+
+Replacement for Remix `useCatch`. Use to deserialize [thrown](https://remix.run/docs/en/v1/route/loader#throwing-responses-in-loaders) `typeJson` responses.
+
+#### Usage
+
+```js
+const caught = useTypedCatch<ThrownResponse<404, CatchData>>()
+```
+
 ## `useTypedRouteLoaderData`
 
 Helper for `useMatches` that returns the route data based on provided route `id`
