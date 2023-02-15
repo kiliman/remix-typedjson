@@ -10,7 +10,7 @@ describe('stringify Remix data', () => {
     const obj = { message: 'hello', date: new Date(Date.UTC(2020, 0, 1)) }
     const json = stringifyRemix(obj)
     expect(json).toEqual(
-      '{"message":"hello","date":"2020-01-01T00:00:00.000Z","__meta__":{"date":"date"}}',
+      '{"message":"hello","date":"2020-01-01T00:00:00.000Z","__meta__":[{"path":["date"],"type":"date"}]}',
     )
   })
   it('works for arrays', () => {
@@ -22,7 +22,7 @@ describe('stringify Remix data', () => {
     expect(json).toEqual(
       '{"__obj__":[{"message":"hello","bigint":"1"}' +
         ',{"message":"world","bigint":"2"}],' +
-        '"__meta__":{"0.bigint":"bigint","1.bigint":"bigint"}}',
+        '"__meta__":[{"path":["0","bigint"],"type":"bigint"},{"path":["1","bigint"],"type":"bigint"}]}',
     )
   })
 })

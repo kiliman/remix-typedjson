@@ -9,7 +9,11 @@ type NonJsonTypes =
   | '-infinity'
   | 'nan'
   | 'error'
-type MetaType = Record<string, NonJsonTypes>
+type MetaInfo = {
+  path: string[]
+  type: NonJsonTypes
+}
+type MetaType = Array<MetaInfo>
 type EntryType = {
   type: NonJsonTypes | 'object'
   value: any
@@ -21,8 +25,8 @@ function serialize<T>(data: T): TypedJsonResult {
   if (data === undefined) return { json: undefined }
 
   const stack: EntryType[] = []
-  const keys: string[] = ['']
-  const meta = new Map()
+  const keys: string[] = []
+  const meta: MetaType = []
   function replacer(key: string, value: any) {
     function unwindStack() {
       while (stack.length > 0) {
@@ -41,7 +45,7 @@ function serialize<T>(data: T): TypedJsonResult {
     if (entry) {
       value = entry.value[key]
     }
-    let metaKey = `${keys[keys.length - 1]}${key}`
+    let metaPath = [...keys, key]
     const valueType = typeof value
     if (valueType === 'object' && value !== null) {
       let count = 0
@@ -73,37 +77,37 @@ function serialize<T>(data: T): TypedJsonResult {
         t = 'object'
       }
       if (t !== 'object') {
-        meta.set(metaKey, t)
+        meta.push({ path: metaPath, type: t })
       }
       if (count !== 0) {
         stack.push({ type: t, value, count, iteration: 0 })
         if (key && t === 'object') {
-          keys.push(`${metaKey}.`)
+          keys.push(key)
         }
         return value
       }
     }
     // handle non-object types
     if (valueType === 'bigint') {
-      meta.set(metaKey, 'bigint')
+      meta.push({ path: metaPath, type: 'bigint' })
       return String(value)
     }
     if (valueType === 'number') {
       if (value === Number.POSITIVE_INFINITY) {
-        meta.set(metaKey, 'infinity')
+        meta.push({ path: metaPath, type: 'infinity' })
         return 'Infinity'
       }
       if (value === Number.NEGATIVE_INFINITY) {
-        meta.set(metaKey, '-infinity')
+        meta.push({ path: metaPath, type: '-infinity' })
         return '-Infinity'
       }
       if (Number.isNaN(value)) {
-        meta.set(metaKey, 'nan')
+        meta.push({ path: metaPath, type: 'nan' })
         return 'NaN'
       }
     }
     if (typeof value === 'undefined') {
-      meta.set(metaKey, 'undefined')
+      meta.push({ path: metaPath, type: 'undefined' })
       return null
     }
     return value
@@ -111,7 +115,7 @@ function serialize<T>(data: T): TypedJsonResult {
   const json = JSON.stringify(data, replacer)
   return {
     json,
-    meta: meta.size === 0 ? undefined : Object.fromEntries(meta.entries()),
+    meta: Object.keys(meta).length === 0 ? undefined : meta,
   }
 }
 
@@ -128,9 +132,9 @@ function deserialize<T>({ json, meta }: TypedJsonResult): T | null {
 }
 
 function applyMeta<T>(data: T, meta: MetaType) {
-  for (const key of Object.keys(meta)) {
-    applyConversion(data, key.split('.'), meta[key])
-  }
+  meta.forEach(({ path, type }) => {
+    applyConversion(data, path, type)
+  })
   return data
 
   function applyConversion(
@@ -193,14 +197,22 @@ type TypedJsonResult = {
   meta?: MetaType
 }
 type StrigifyParameters = Parameters<typeof JSON.stringify>
-function stringify<T>(data: T, replacer?: StrigifyParameters[1], space?: StrigifyParameters[2]) {
+function stringify<T>(
+  data: T,
+  replacer?: StrigifyParameters[1],
+  space?: StrigifyParameters[2],
+) {
   if (replacer || space) {
     const { json, meta } = serialize<T>(data)
     const jsonObj = deserialize({ json })
-    return JSON.stringify({
-      json: jsonObj,
-      meta,
-    }, replacer, space)
+    return JSON.stringify(
+      {
+        json: jsonObj,
+        meta,
+      },
+      replacer,
+      space,
+    )
   }
   return JSON.stringify(serialize<T>(data))
 }

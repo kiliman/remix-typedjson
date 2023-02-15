@@ -13,7 +13,7 @@ describe('serialize and deserialize', () => {
     const obj = { data: [{ greeting: 'hello', today: new Date() }], counter: 1 }
     const { json, meta } = serialize(obj)
     expect(json).toEqual(JSON.stringify(obj))
-    expect(meta).toEqual({ 'data.0.today': 'date' })
+    expect(meta).toEqual([{ path: ['data', '0', 'today'], type: 'date' }])
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -29,7 +29,7 @@ describe('serialize and deserialize', () => {
     const obj = [1, undefined, 2]
     const { json, meta } = serialize(obj)
     expect(json).toEqual(JSON.stringify(obj))
-    expect(meta).toEqual({ '1': 'undefined' })
+    expect(meta).toEqual([{ path: ['1'], type: 'undefined' }])
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -39,7 +39,7 @@ describe('serialize and deserialize', () => {
     }
     const { json, meta } = serialize(obj)
     expect(json).toEqual('{"a":[1,2,3]}')
-    expect(meta).toEqual({ a: 'set' })
+    expect(meta).toEqual([{ path: ['a'], type: 'set' }])
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -74,7 +74,10 @@ describe('serialize and deserialize', () => {
     expect(json).toEqual(
       JSON.stringify({ a: { key: 'value', anotherkey: 'b' }, b: { '2': 'b' } }),
     )
-    expect(meta).toEqual({ a: 'map', b: 'map' })
+    expect(meta).toEqual([
+      { path: ['a'], type: 'map' },
+      { path: ['b'], type: 'map' },
+    ])
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -125,7 +128,7 @@ describe('serialize and deserialize', () => {
     }
     const { json, meta } = serialize(obj)
     expect(json).toEqual(JSON.stringify(obj))
-    expect(meta).toEqual({ 'meeting.date': 'date' })
+    expect(meta).toEqual([{ path: ['meeting', 'date'], type: 'date' }])
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -139,7 +142,7 @@ describe('serialize and deserialize', () => {
         e: { name: 'Error', message: 'epic fail', stack: obj.e.stack },
       }),
     )
-    expect(meta).toEqual({ e: 'error' })
+    expect(meta).toEqual([{ path: ['e'], type: 'error' }])
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -147,7 +150,7 @@ describe('serialize and deserialize', () => {
     const obj = { a: /hello/g }
     const { json, meta } = serialize(obj)
     expect(json).toEqual('{"a":"/hello/g"}')
-    expect(meta).toEqual({ a: 'regexp' })
+    expect(meta).toEqual([{ path: ['a'], type: 'regexp' }])
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -157,7 +160,7 @@ describe('serialize and deserialize', () => {
     }
     const { json, meta } = serialize(obj)
     expect(json).toEqual('{"a":"Infinity"}')
-    expect(meta).toEqual({ a: 'infinity' })
+    expect(meta).toEqual([{ path: ['a'], type: 'infinity' }])
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -167,7 +170,7 @@ describe('serialize and deserialize', () => {
     }
     const { json, meta } = serialize(obj)
     expect(json).toEqual('{"a":"-Infinity"}')
-    expect(meta).toEqual({ a: '-infinity' })
+    expect(meta).toEqual([{ path: ['a'], type: '-infinity' }])
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -175,7 +178,7 @@ describe('serialize and deserialize', () => {
     const obj = { a: NaN }
     const { json, meta } = serialize(obj)
     expect(json).toEqual('{"a":"NaN"}')
-    expect(meta).toEqual({ a: 'nan' })
+    expect(meta).toEqual([{ path: ['a'], type: 'nan' }])
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -185,7 +188,7 @@ describe('serialize and deserialize', () => {
     }
     const { json, meta } = serialize(obj)
     expect(json).toEqual('{"a":"1021312312412312312313"}')
-    expect(meta).toEqual({ a: 'bigint' })
+    expect(meta).toEqual([{ path: ['a'], type: 'bigint' }])
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -193,7 +196,7 @@ describe('serialize and deserialize', () => {
     expect(deserialize(serialize(undefined)!)).toBeUndefined()
   })
 
-  it.only('works for serialize output arguments', () => {
+  it('works for serialize output arguments', () => {
     const test = {
       bi: BigInt('1021312312412312312313'),
       nan: NaN,
@@ -201,13 +204,15 @@ describe('serialize and deserialize', () => {
         P: Number.POSITIVE_INFINITY,
         N: Number.NEGATIVE_INFINITY,
       },
-      d: new Date(Date.UTC(1979, 0, 10))
+      d: new Date(Date.UTC(1979, 0, 10)),
     }
 
     const strStd = stringify(test)
     const strDbg = stringify(test, null, 2)
 
-    expect(strStd).toBe("{\"json\":\"{\\\"bi\\\":\\\"1021312312412312312313\\\",\\\"nan\\\":\\\"NaN\\\",\\\"inf\\\":{\\\"P\\\":\\\"Infinity\\\",\\\"N\\\":\\\"-Infinity\\\"},\\\"d\\\":\\\"1979-01-10T00:00:00.000Z\\\"}\",\"meta\":{\"bi\":\"bigint\",\"nan\":\"nan\",\"inf.P\":\"infinity\",\"inf.N\":\"-infinity\",\"d\":\"date\"}}")
+    expect(strStd).toBe(
+      '{"json":"{\\"bi\\":\\"1021312312412312312313\\",\\"nan\\":\\"NaN\\",\\"inf\\":{\\"P\\":\\"Infinity\\",\\"N\\":\\"-Infinity\\"},\\"d\\":\\"1979-01-10T00:00:00.000Z\\"}","meta":[{"path":["bi"],"type":"bigint"},{"path":["nan"],"type":"nan"},{"path":["inf","P"],"type":"infinity"},{"path":["inf","N"],"type":"-infinity"},{"path":["d"],"type":"date"}]}',
+    )
     expect(strDbg).toBe(`{
   "json": {
     "bi": "1021312312412312312313",
@@ -218,13 +223,49 @@ describe('serialize and deserialize', () => {
     },
     "d": "1979-01-10T00:00:00.000Z"
   },
-  "meta": {
-    "bi": "bigint",
-    "nan": "nan",
-    "inf.P": "infinity",
-    "inf.N": "-infinity",
-    "d": "date"
-  }
+  "meta": [
+    {
+      "path": [
+        "bi"
+      ],
+      "type": "bigint"
+    },
+    {
+      "path": [
+        "nan"
+      ],
+      "type": "nan"
+    },
+    {
+      "path": [
+        "inf",
+        "P"
+      ],
+      "type": "infinity"
+    },
+    {
+      "path": [
+        "inf",
+        "N"
+      ],
+      "type": "-infinity"
+    },
+    {
+      "path": [
+        "d"
+      ],
+      "type": "date"
+    }
+  ]
 }`)
   })
+})
+
+it('works for clashing dot notation keys', () => {
+  const obj = { a: {}, 'a.b': NaN }
+  const { json, meta } = serialize(obj)
+  expect(json).toEqual('{"a":{},"a.b":"NaN"}')
+  expect(meta).toEqual([{ path: ['a.b'], type: 'nan' }])
+  const result = deserialize<typeof obj>({ json, meta })
+  expect(result).toEqual(obj)
 })
