@@ -6,7 +6,7 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-This package is a replacement for [`superjson`](https://github.com/blitz-js/superjson) to use in your Remix app. It handles a subset
+This package is a replacement for [`superjson`](https://github.com/blitz-js/superjson) to use in your [Remix](https://remix.run/) app. It handles a subset
 of types that `superjson` supports, but is faster and smaller.
 
 NOTE: Although faster, `remix-typedjson` is nowhere near as flexible as `superjson`. It only supports a subset of types with no extensibility. If you need the advanced features of `superjson`, then I definitely recommend it.
