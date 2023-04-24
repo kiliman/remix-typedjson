@@ -93,6 +93,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "danmarshall",
+      "name": "Dan Marshall",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11507384?v=4",
+      "profile": "http://maker.js.org/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

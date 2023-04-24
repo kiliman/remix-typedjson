@@ -1,9 +1,7 @@
 # remix-typedjson
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-
-[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
-
+[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 This package is a replacement for [`superjson`](https://github.com/blitz-js/superjson) to use in your [Remix](https://remix.run/) app. It handles a subset
@@ -163,19 +161,22 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 <table>
-  <tr>
-    <td align="center"><a href="https://kiliman.dev/"><img src="https://avatars.githubusercontent.com/u/47168?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kiliman</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=kiliman" title="Code">💻</a> <a href="https://github.com/Kiliman/remix-typedjson/commits?author=kiliman" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://kentcdodds.com/"><img src="https://avatars.githubusercontent.com/u/1500684?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kent C. Dodds</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=kentcdodds" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/Skn0tt"><img src="https://avatars.githubusercontent.com/u/14912729?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Simon Knott</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=Skn0tt" title="Code">💻</a> <a href="https://github.com/Kiliman/remix-typedjson/issues?q=author%3ASkn0tt" title="Bug reports">🐛</a> <a href="https://github.com/Kiliman/remix-typedjson/commits?author=Skn0tt" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/Tony-Truand"><img src="https://avatars.githubusercontent.com/u/7480192?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Tony Truand</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=Tony-Truand" title="Code">💻</a> <a href="https://github.com/Kiliman/remix-typedjson/commits?author=Tony-Truand" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/ProdByGR"><img src="https://avatars.githubusercontent.com/u/29157049?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Gregori Rivas</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=ProdByGR" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/glomyst"><img src="https://avatars.githubusercontent.com/u/5370064?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Afsah Nasir</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=glomyst" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/memark"><img src="https://avatars.githubusercontent.com/u/318504?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Magnus Markling</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=memark" title="Code">💻</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/joelazar"><img src="https://avatars.githubusercontent.com/u/16268238?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jozsef Lazar</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=joelazar" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/lukebowerman"><img src="https://avatars.githubusercontent.com/u/19156294?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Luke Bowerman</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=lukebowerman" title="Code">💻</a></td>
-  </tr>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://kiliman.dev/"><img src="https://avatars.githubusercontent.com/u/47168?v=4?s=100" width="100px;" alt="Kiliman"/><br /><sub><b>Kiliman</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=kiliman" title="Code">💻</a> <a href="https://github.com/Kiliman/remix-typedjson/commits?author=kiliman" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://kentcdodds.com/"><img src="https://avatars.githubusercontent.com/u/1500684?v=4?s=100" width="100px;" alt="Kent C. Dodds"/><br /><sub><b>Kent C. Dodds</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=kentcdodds" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Skn0tt"><img src="https://avatars.githubusercontent.com/u/14912729?v=4?s=100" width="100px;" alt="Simon Knott"/><br /><sub><b>Simon Knott</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=Skn0tt" title="Code">💻</a> <a href="https://github.com/Kiliman/remix-typedjson/issues?q=author%3ASkn0tt" title="Bug reports">🐛</a> <a href="https://github.com/Kiliman/remix-typedjson/commits?author=Skn0tt" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Tony-Truand"><img src="https://avatars.githubusercontent.com/u/7480192?v=4?s=100" width="100px;" alt="Tony Truand"/><br /><sub><b>Tony Truand</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=Tony-Truand" title="Code">💻</a> <a href="https://github.com/Kiliman/remix-typedjson/commits?author=Tony-Truand" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ProdByGR"><img src="https://avatars.githubusercontent.com/u/29157049?v=4?s=100" width="100px;" alt="Gregori Rivas"/><br /><sub><b>Gregori Rivas</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=ProdByGR" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/glomyst"><img src="https://avatars.githubusercontent.com/u/5370064?v=4?s=100" width="100px;" alt="Afsah Nasir"/><br /><sub><b>Afsah Nasir</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=glomyst" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/memark"><img src="https://avatars.githubusercontent.com/u/318504?v=4?s=100" width="100px;" alt="Magnus Markling"/><br /><sub><b>Magnus Markling</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=memark" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/joelazar"><img src="https://avatars.githubusercontent.com/u/16268238?v=4?s=100" width="100px;" alt="Jozsef Lazar"/><br /><sub><b>Jozsef Lazar</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=joelazar" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/lukebowerman"><img src="https://avatars.githubusercontent.com/u/19156294?v=4?s=100" width="100px;" alt="Luke Bowerman"/><br /><sub><b>Luke Bowerman</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=lukebowerman" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://maker.js.org/"><img src="https://avatars.githubusercontent.com/u/11507384?v=4?s=100" width="100px;" alt="Dan Marshall"/><br /><sub><b>Dan Marshall</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=danmarshall" title="Documentation">📖</a></td>
+    </tr>
+  </tbody>
 </table>
 
 <!-- markdownlint-restore -->
