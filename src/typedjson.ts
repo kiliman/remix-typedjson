@@ -9,24 +9,21 @@ type NonJsonTypes =
   | '-infinity'
   | 'nan'
   | 'error'
-type MetaInfo = {
-  path: string[]
-  type: NonJsonTypes
-}
-type MetaType = Array<MetaInfo>
+type MetaType = Record<string, NonJsonTypes>
 type EntryType = {
   type: NonJsonTypes | 'object'
   value: any
   count: number
   iteration: number
 }
+const SEPARATOR = '..';
 function serialize<T>(data: T): TypedJsonResult {
   if (data === null) return { json: 'null' }
   if (data === undefined) return { json: undefined }
 
   const stack: EntryType[] = []
-  const keys: string[] = []
-  const meta: MetaType = []
+  const keys: string[] = ['']
+  const meta = new Map()
   function replacer(key: string, value: any) {
     function unwindStack() {
       while (stack.length > 0) {
@@ -45,7 +42,8 @@ function serialize<T>(data: T): TypedJsonResult {
     if (entry) {
       value = entry.value[key]
     }
-    let metaPath = [...keys, key]
+    // Since we use `..` as a separator, we want to escape all other `.` in the key
+    let metaKey = `${keys[keys.length - 1]}${key.replace(/\./g, '\\.')}`
     const valueType = typeof value
     if (valueType === 'object' && value !== null) {
       let count = 0
@@ -77,37 +75,37 @@ function serialize<T>(data: T): TypedJsonResult {
         t = 'object'
       }
       if (t !== 'object') {
-        meta.push({ path: metaPath, type: t })
+        meta.set(metaKey, t)
       }
       if (count !== 0) {
         stack.push({ type: t, value, count, iteration: 0 })
         if (key && t === 'object') {
-          keys.push(key)
+          keys.push(`${metaKey}${SEPARATOR}`)
         }
         return value
       }
     }
     // handle non-object types
     if (valueType === 'bigint') {
-      meta.push({ path: metaPath, type: 'bigint' })
+      meta.set(metaKey, 'bigint')
       return String(value)
     }
     if (valueType === 'number') {
       if (value === Number.POSITIVE_INFINITY) {
-        meta.push({ path: metaPath, type: 'infinity' })
+        meta.set(metaKey, 'infinity')
         return 'Infinity'
       }
       if (value === Number.NEGATIVE_INFINITY) {
-        meta.push({ path: metaPath, type: '-infinity' })
+        meta.set(metaKey, '-infinity')
         return '-Infinity'
       }
       if (Number.isNaN(value)) {
-        meta.push({ path: metaPath, type: 'nan' })
+        meta.set(metaKey, 'nan')
         return 'NaN'
       }
     }
     if (typeof value === 'undefined') {
-      meta.push({ path: metaPath, type: 'undefined' })
+      meta.set(metaKey, 'undefined')
       return null
     }
     return value
@@ -115,7 +113,7 @@ function serialize<T>(data: T): TypedJsonResult {
   const json = JSON.stringify(data, replacer)
   return {
     json,
-    meta: Object.keys(meta).length === 0 ? undefined : meta,
+    meta: meta.size === 0 ? undefined : Object.fromEntries(meta.entries()),
   }
 }
 
@@ -132,9 +130,9 @@ function deserialize<T>({ json, meta }: TypedJsonResult): T | null {
 }
 
 function applyMeta<T>(data: T, meta: MetaType) {
-  meta.forEach(({ path, type }) => {
-    applyConversion(data, path, type)
-  })
+  for (const key of Object.keys(meta)) {
+    applyConversion(data, key.split(SEPARATOR), meta[key]);
+  }
   return data
 
   function applyConversion(
@@ -143,7 +141,8 @@ function applyMeta<T>(data: T, meta: MetaType) {
     type: NonJsonTypes,
     depth: number = 0,
   ) {
-    const key = keys[depth]
+    // return the escaped `.` back to its original value
+    const key = keys[depth].replace(/\\\./g, '.')
     if (depth < keys.length - 1) {
       applyConversion(data[key], keys, type, depth + 1)
       return
@@ -197,22 +196,14 @@ type TypedJsonResult = {
   meta?: MetaType
 }
 type StrigifyParameters = Parameters<typeof JSON.stringify>
-function stringify<T>(
-  data: T,
-  replacer?: StrigifyParameters[1],
-  space?: StrigifyParameters[2],
-) {
+function stringify<T>(data: T, replacer?: StrigifyParameters[1], space?: StrigifyParameters[2]) {
   if (replacer || space) {
     const { json, meta } = serialize<T>(data)
     const jsonObj = deserialize({ json })
-    return JSON.stringify(
-      {
+    return JSON.stringify({
         json: jsonObj,
         meta,
-      },
-      replacer,
-      space,
-    )
+      }, replacer, space)
   }
   return JSON.stringify(serialize<T>(data))
 }

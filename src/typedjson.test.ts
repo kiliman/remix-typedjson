@@ -13,7 +13,7 @@ describe('serialize and deserialize', () => {
     const obj = { data: [{ greeting: 'hello', today: new Date() }], counter: 1 }
     const { json, meta } = serialize(obj)
     expect(json).toEqual(JSON.stringify(obj))
-    expect(meta).toEqual([{ path: ['data', '0', 'today'], type: 'date' }])
+    expect(meta).toEqual({ 'data..0..today': 'date' })
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -29,7 +29,7 @@ describe('serialize and deserialize', () => {
     const obj = [1, undefined, 2]
     const { json, meta } = serialize(obj)
     expect(json).toEqual(JSON.stringify(obj))
-    expect(meta).toEqual([{ path: ['1'], type: 'undefined' }])
+    expect(meta).toEqual({ '1': 'undefined' })
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -39,7 +39,7 @@ describe('serialize and deserialize', () => {
     }
     const { json, meta } = serialize(obj)
     expect(json).toEqual('{"a":[1,2,3]}')
-    expect(meta).toEqual([{ path: ['a'], type: 'set' }])
+    expect(meta).toEqual({ a: 'set' })
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -49,7 +49,7 @@ describe('serialize and deserialize', () => {
     }
     const { json, meta } = serialize(obj)
     expect(json).toEqual('{"a":[1,null,2,"2020-01-01T00:00:00.000Z"]}')
-    expect(meta).toEqual({ a: 'set', 'a.1': 'undefined', 'a.3': 'date' })
+    expect(meta).toEqual({ a: 'set', 'a..1': 'undefined', 'a..3': 'date' })
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -74,10 +74,7 @@ describe('serialize and deserialize', () => {
     expect(json).toEqual(
       JSON.stringify({ a: { key: 'value', anotherkey: 'b' }, b: { '2': 'b' } }),
     )
-    expect(meta).toEqual([
-      { path: ['a'], type: 'map' },
-      { path: ['b'], type: 'map' },
-    ])
+    expect(meta).toEqual({ a: 'map', b: 'map' })
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -96,7 +93,7 @@ describe('serialize and deserialize', () => {
     //console.log(result)
     expect(result).toEqual(obj)
   })
-  it.skip('works for paths containing dots', () => {
+  it('works for paths containing dots', () => {
     const obj = {
       'a.1': {
         b: new Set([1, 2]),
@@ -108,7 +105,7 @@ describe('serialize and deserialize', () => {
     //console.log(result)
     expect(result).toEqual(obj)
   })
-  it.skip('works for paths containing backslashes', () => {
+  it('works for paths containing backslashes', () => {
     const obj = {
       'a\\.1': {
         b: new Set([1, 2]),
@@ -128,7 +125,7 @@ describe('serialize and deserialize', () => {
     }
     const { json, meta } = serialize(obj)
     expect(json).toEqual(JSON.stringify(obj))
-    expect(meta).toEqual([{ path: ['meeting', 'date'], type: 'date' }])
+    expect(meta).toEqual({ 'meeting..date': 'date' })
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -142,7 +139,7 @@ describe('serialize and deserialize', () => {
         e: { name: 'Error', message: 'epic fail', stack: obj.e.stack },
       }),
     )
-    expect(meta).toEqual([{ path: ['e'], type: 'error' }])
+    expect(meta).toEqual({ e: 'error' })
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -150,7 +147,7 @@ describe('serialize and deserialize', () => {
     const obj = { a: /hello/g }
     const { json, meta } = serialize(obj)
     expect(json).toEqual('{"a":"/hello/g"}')
-    expect(meta).toEqual([{ path: ['a'], type: 'regexp' }])
+    expect(meta).toEqual({ a: 'regexp' })
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -160,7 +157,7 @@ describe('serialize and deserialize', () => {
     }
     const { json, meta } = serialize(obj)
     expect(json).toEqual('{"a":"Infinity"}')
-    expect(meta).toEqual([{ path: ['a'], type: 'infinity' }])
+    expect(meta).toEqual({ a: 'infinity' })
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -170,7 +167,7 @@ describe('serialize and deserialize', () => {
     }
     const { json, meta } = serialize(obj)
     expect(json).toEqual('{"a":"-Infinity"}')
-    expect(meta).toEqual([{ path: ['a'], type: '-infinity' }])
+    expect(meta).toEqual({ a: '-infinity' })
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -178,7 +175,7 @@ describe('serialize and deserialize', () => {
     const obj = { a: NaN }
     const { json, meta } = serialize(obj)
     expect(json).toEqual('{"a":"NaN"}')
-    expect(meta).toEqual([{ path: ['a'], type: 'nan' }])
+    expect(meta).toEqual({ a: 'nan' })
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -188,7 +185,7 @@ describe('serialize and deserialize', () => {
     }
     const { json, meta } = serialize(obj)
     expect(json).toEqual('{"a":"1021312312412312312313"}')
-    expect(meta).toEqual([{ path: ['a'], type: 'bigint' }])
+    expect(meta).toEqual({ a: 'bigint' })
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
@@ -211,7 +208,7 @@ describe('serialize and deserialize', () => {
     const strDbg = stringify(test, null, 2)
 
     expect(strStd).toBe(
-      '{"json":"{\\"bi\\":\\"1021312312412312312313\\",\\"nan\\":\\"NaN\\",\\"inf\\":{\\"P\\":\\"Infinity\\",\\"N\\":\\"-Infinity\\"},\\"d\\":\\"1979-01-10T00:00:00.000Z\\"}","meta":[{"path":["bi"],"type":"bigint"},{"path":["nan"],"type":"nan"},{"path":["inf","P"],"type":"infinity"},{"path":["inf","N"],"type":"-infinity"},{"path":["d"],"type":"date"}]}',
+      '{"json":"{\\"bi\\":\\"1021312312412312312313\\",\\"nan\\":\\"NaN\\",\\"inf\\":{\\"P\\":\\"Infinity\\",\\"N\\":\\"-Infinity\\"},\\"d\\":\\"1979-01-10T00:00:00.000Z\\"}","meta":{"bi":"bigint","nan":"nan","inf..P":"infinity","inf..N":"-infinity","d":"date"}}',
     )
     expect(strDbg).toBe(`{
   "json": {
@@ -223,40 +220,13 @@ describe('serialize and deserialize', () => {
     },
     "d": "1979-01-10T00:00:00.000Z"
   },
-  "meta": [
-    {
-      "path": [
-        "bi"
-      ],
-      "type": "bigint"
-    },
-    {
-      "path": [
-        "nan"
-      ],
-      "type": "nan"
-    },
-    {
-      "path": [
-        "inf",
-        "P"
-      ],
-      "type": "infinity"
-    },
-    {
-      "path": [
-        "inf",
-        "N"
-      ],
-      "type": "-infinity"
-    },
-    {
-      "path": [
-        "d"
-      ],
-      "type": "date"
-    }
-  ]
+  "meta": {
+    "bi": "bigint",
+    "nan": "nan",
+    "inf..P": "infinity",
+    "inf..N": "-infinity",
+    "d": "date"
+  }
 }`)
   })
 })
@@ -265,7 +235,44 @@ it('works for clashing dot notation keys', () => {
   const obj = { a: {}, 'a.b': NaN }
   const { json, meta } = serialize(obj)
   expect(json).toEqual('{"a":{},"a.b":"NaN"}')
-  expect(meta).toEqual([{ path: ['a.b'], type: 'nan' }])
+  expect(meta).toEqual({ 'a\\.b': 'nan' })
+  const result = deserialize<typeof obj>({ json, meta })
+  expect(result).toEqual(obj)
+})
+
+it('works for properties with combinations of dots and slashes', () => {
+  const obj = {
+    a: {
+      b: NaN,
+      'c.d': NaN,
+      'c\\.d': NaN,
+      'c.d.': NaN,
+      'c.d\\': NaN,
+      'c..d': NaN,
+      'c\\.\\.': NaN,
+      'd.e': {
+        f: NaN,
+        'f.g': NaN
+      },
+    },
+    'a.b': NaN,
+  }
+  const { json, meta } = serialize(obj)
+  expect(json).toEqual(
+    '{"a":{"b":"NaN","c.d":"NaN","c\\\\.d":"NaN","c.d.":"NaN","c.d\\\\":"NaN","c..d":"NaN","c\\\\.\\\\.":"NaN","d.e":{"f":"NaN","f.g":"NaN"}},"a.b":"NaN"}',
+  )
+  expect(meta).toEqual({
+    'a..b': 'nan',
+    'a..c\\.d': 'nan',
+    'a..c\\\\.d': 'nan',
+    'a..c\\.d\\.': 'nan',
+    'a..c\\.d\\': 'nan',
+    'a..c\\.\\.d': 'nan',
+    'a..c\\\\.\\\\.': 'nan',
+    'a..d\\.e..f': 'nan',
+    'a..d\\.e..f\\.g': 'nan',
+    'a\\.b': 'nan',
+  })
   const result = deserialize<typeof obj>({ json, meta })
   expect(result).toEqual(obj)
 })
