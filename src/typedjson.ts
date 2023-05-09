@@ -201,9 +201,9 @@ function stringify<T>(data: T, replacer?: StrigifyParameters[1], space?: Strigif
     const { json, meta } = serialize<T>(data)
     const jsonObj = deserialize({ json })
     return JSON.stringify({
-        json: jsonObj,
-        meta,
-      }, replacer, space)
+      json: jsonObj,
+      meta,
+    }, replacer, space)
   }
   return JSON.stringify(serialize<T>(data))
 }
