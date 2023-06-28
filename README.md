@@ -128,9 +128,9 @@ export const meta: TypedMetaFunction<typeof loader> = ({ data }) => {
 }
 // for parentsData, you can specify a Record of typed loaders keyed by route id
 // root.tsx
-export LoaderType = typeof loader
+export type LoaderType = typeof loader
 // routes/parent.tsx
-export LoaderType = typeof loader
+export type LoaderType = typeof loader
 // routes/child.tsx
 import { type LoaderType as RootLoaderType } from '~/root'
 import { type LoaderType as ParentLoaderType } from '~/routes/parent'
