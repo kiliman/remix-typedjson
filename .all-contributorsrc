@@ -102,6 +102,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "ericallam",
+      "name": "Eric Allam",
+      "avatar_url": "https://avatars.githubusercontent.com/u/534?v=4",
+      "profile": "https://trigger.dev/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

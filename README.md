@@ -1,7 +1,7 @@
 # remix-typedjson
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 This package is a replacement for [`superjson`](https://github.com/blitz-js/superjson) to use in your [Remix](https://remix.run/) app. It handles a subset
@@ -175,6 +175,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/joelazar"><img src="https://avatars.githubusercontent.com/u/16268238?v=4?s=100" width="100px;" alt="Jozsef Lazar"/><br /><sub><b>Jozsef Lazar</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=joelazar" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/lukebowerman"><img src="https://avatars.githubusercontent.com/u/19156294?v=4?s=100" width="100px;" alt="Luke Bowerman"/><br /><sub><b>Luke Bowerman</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=lukebowerman" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://maker.js.org/"><img src="https://avatars.githubusercontent.com/u/11507384?v=4?s=100" width="100px;" alt="Dan Marshall"/><br /><sub><b>Dan Marshall</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=danmarshall" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://trigger.dev/"><img src="https://avatars.githubusercontent.com/u/534?v=4?s=100" width="100px;" alt="Eric Allam"/><br /><sub><b>Eric Allam</b></sub></a><br /><a href="https://github.com/Kiliman/remix-typedjson/commits?author=ericallam" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>
