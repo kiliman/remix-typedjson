@@ -52,6 +52,9 @@ function serialize<T>(data: T): TypedJsonResult {
       if (value instanceof Date) {
         t = 'date'
         value = value.toISOString()
+      } else if (Decimal.isDecimal(value)) {
+        t = 'decimal'
+        value = value.toJSON()
       } else if (value instanceof Set) {
         value = Array.from(value)
         count = value.length
@@ -66,9 +69,6 @@ function serialize<T>(data: T): TypedJsonResult {
       } else if (value instanceof RegExp) {
         t = 'regexp'
         value = String(value)
-      } else if (value instanceof Decimal) {
-        t = 'decimal'
-        value = value.toJSON()
       } else if (value instanceof Error) {
         t = 'error'
         value = { name: value.name, message: value.message, stack: value.stack }
