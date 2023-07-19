@@ -20,7 +20,6 @@ type EntryType = {
   iteration: number
 }
 function serialize<T>(data: T): TypedJsonResult {
-  console.log('HI GARRETT')
   if (data === null) return { json: 'null' }
   if (data === undefined) return { json: undefined }
 
