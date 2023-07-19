@@ -1,3 +1,4 @@
+import Decimal from 'decimal.js'
 import { deserialize, serialize, stringify } from './typedjson'
 
 describe('serialize and deserialize', () => {
@@ -57,9 +58,7 @@ describe('serialize and deserialize', () => {
     const obj = new Set([1, undefined, 2])
 
     const { json, meta } = serialize(obj)
-    //console.log(json, meta)
     const result = deserialize({ json, meta })
-    //console.log(result)
     expect(result).toEqual(obj)
   })
   it('works for simple Maps', () => {
@@ -189,11 +188,22 @@ describe('serialize and deserialize', () => {
     const result = deserialize<typeof obj>({ json, meta })
     expect(result).toEqual(obj)
   })
+  it('works for Decimal', () => {
+    const obj = {
+      a: new Decimal(22.5),
+    }
+    const { json, meta } = serialize(obj)
+    expect(json).toEqual('{"a":"22.5"}')
+    expect(meta).toEqual({ a: 'decimal' })
+    const result = deserialize<typeof obj>({ json, meta })
+    expect(result).toEqual(obj)
+  })
+
   it('works for undefined', () => {
     expect(deserialize(serialize(undefined)!)).toBeUndefined()
   })
 
-  it.only('works for serialize output arguments', () => {
+  it('works for serialize output arguments', () => {
     const test = {
       bi: BigInt('1021312312412312312313'),
       nan: NaN,
@@ -201,13 +211,15 @@ describe('serialize and deserialize', () => {
         P: Number.POSITIVE_INFINITY,
         N: Number.NEGATIVE_INFINITY,
       },
-      d: new Date(Date.UTC(1979, 0, 10))
+      d: new Date(Date.UTC(1979, 0, 10)),
     }
 
     const strStd = stringify(test)
     const strDbg = stringify(test, null, 2)
 
-    expect(strStd).toBe("{\"json\":\"{\\\"bi\\\":\\\"1021312312412312312313\\\",\\\"nan\\\":\\\"NaN\\\",\\\"inf\\\":{\\\"P\\\":\\\"Infinity\\\",\\\"N\\\":\\\"-Infinity\\\"},\\\"d\\\":\\\"1979-01-10T00:00:00.000Z\\\"}\",\"meta\":{\"bi\":\"bigint\",\"nan\":\"nan\",\"inf.P\":\"infinity\",\"inf.N\":\"-infinity\",\"d\":\"date\"}}")
+    expect(strStd).toBe(
+      '{"json":"{\\"bi\\":\\"1021312312412312312313\\",\\"nan\\":\\"NaN\\",\\"inf\\":{\\"P\\":\\"Infinity\\",\\"N\\":\\"-Infinity\\"},\\"d\\":\\"1979-01-10T00:00:00.000Z\\"}","meta":{"bi":"bigint","nan":"nan","inf.P":"infinity","inf.N":"-infinity","d":"date"}}',
+    )
     expect(strDbg).toBe(`{
   "json": {
     "bi": "1021312312412312312313",

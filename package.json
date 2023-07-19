@@ -61,5 +61,8 @@
     "@remix-run/react": "^1.6.5",
     "@remix-run/server-runtime": "^1.6.5",
     "react": "^17.0.2 || ^18.0.0"
+  },
+  "dependencies": {
+    "decimal.js": "^10.4.3"
   }
 }

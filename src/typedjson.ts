@@ -1,9 +1,12 @@
+import Decimal from 'decimal.js'
+
 type NonJsonTypes =
   | 'date'
   | 'set'
   | 'map'
   | 'regexp'
   | 'bigint'
+  | 'decimal'
   | 'undefined'
   | 'infinity'
   | '-infinity'
@@ -63,6 +66,9 @@ function serialize<T>(data: T): TypedJsonResult {
       } else if (value instanceof RegExp) {
         t = 'regexp'
         value = String(value)
+      } else if (value instanceof Decimal) {
+        t = 'decimal'
+        value = value.toJSON()
       } else if (value instanceof Error) {
         t = 'error'
         value = { name: value.name, message: value.message, stack: value.stack }
@@ -175,6 +181,9 @@ function applyMeta<T>(data: T, meta: MetaType) {
       case '-infinity':
         data[key] = Number.NEGATIVE_INFINITY
         break
+      case 'decimal':
+        data[key] = new Decimal(value)
+        break
       case 'nan':
         data[key] = NaN
         break
@@ -193,14 +202,22 @@ type TypedJsonResult = {
   meta?: MetaType
 }
 type StrigifyParameters = Parameters<typeof JSON.stringify>
-function stringify<T>(data: T, replacer?: StrigifyParameters[1], space?: StrigifyParameters[2]) {
+function stringify<T>(
+  data: T,
+  replacer?: StrigifyParameters[1],
+  space?: StrigifyParameters[2],
+) {
   if (replacer || space) {
     const { json, meta } = serialize<T>(data)
     const jsonObj = deserialize({ json })
-    return JSON.stringify({
-      json: jsonObj,
-      meta,
-    }, replacer, space)
+    return JSON.stringify(
+      {
+        json: jsonObj,
+        meta,
+      },
+      replacer,
+      space,
+    )
   }
   return JSON.stringify(serialize<T>(data))
 }
