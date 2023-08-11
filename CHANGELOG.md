@@ -1,9 +1,13 @@
 # CHANGELOG
 
+## 🚀 v0.2.0
+
+- ✨ Add `registerCustomType` API
+
 ## 🚀 v0.1.7
 
-- ✨ Add useTypedRouteLoaderData
-- 🔨 Export UseDataFunctionReturn & RemixSerializedType types [#19](https://github.com/kiliman/remix-typedjson/pull/19)
+- ✨ Add `useTypedRouteLoaderData`
+- 🔨 Export `UseDataFunctionReturn` & `RemixSerializedType` types [#19](https://github.com/kiliman/remix-typedjson/pull/19)
 
 ## 🚀 v0.1.6
 
