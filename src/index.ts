@@ -19,6 +19,7 @@ export {
   applyMeta,
   deserialize,
   parse,
+  registerCustomType,
   serialize,
   stringify,
 } from './typedjson'

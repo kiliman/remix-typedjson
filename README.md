@@ -1,7 +1,9 @@
 # remix-typedjson
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 This package is a replacement for [`superjson`](https://github.com/blitz-js/superjson) to use in your [Remix](https://remix.run/) app. It handles a subset
@@ -152,6 +154,82 @@ export const meta: TypedMetaFunction<
   }
 }
 ```
+
+## `registerCustomType`
+
+✨ New in v0.2.0
+
+`remix-typed-json` support a limited number of native types in order to keep the
+bundle small. However, if you need to support a custom type like `Decimal`, then
+use the `registerCustomType` API. This way you only pay the cost of the custom
+type if you use it.
+
+```ts
+type CustomTypeEntry<T> = {
+  type: string
+  is: (value: unknown) => boolean
+  serialize: (value: T) => string
+  deserialize: (value: string) => T
+}
+
+export function registerCustomType<T>(entry: CustomTypeEntry<T>) {
+  customTypeMap.set(entry.type, entry)
+}
+```
+
+### Usage
+
+Register the custom type in _root.tsx_ once.
+
+```ts
+// root.tsx
+import {
+  typedjson,
+  registerCustomType,
+  useTypedLoaderData,
+} from 'remix-typedjson'
+
+import Decimal from 'decimal.js'
+
+registerCustomType({
+  type: 'decimal',
+  is: (value: unknown) => value instanceof Decimal,
+  serialize: (value: Decimal) => value.toString(),
+  deserialize: (value: string) => new Decimal(value),
+})
+```
+
+You can now serialize and deserialize the `Decimal` type.
+
+```ts
+// route.tsx
+export function loader() {
+  const d = new Decimal('1234567890123456789012345678901234567890')
+  return typedjson({ greeting: 'Hello World', today: new Date(), d })
+}
+
+export default function Index() {
+  const data = useTypedLoaderData<typeof loader>()
+
+  return (
+    <>
+      <h2>Loader Data</h2>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+      <ul>
+        <li>today: {data.today.toLocaleString()}</li>
+        <li>
+          d instanceof Decimal: {data.d instanceof Decimal ? 'true' : 'false'}
+        </li>
+        <li>d: {data.d.toFixed(0)}</li>
+      </ul>
+    </>
+  )
+}
+```
+
+<img src="https://user-images.githubusercontent.com/47168/260161616-5eb9c4c7-3891-4f34-b89c-f927800b081d.png" style="max-width: 720px;" >
+
+<img src="https://user-images.githubusercontent.com/47168/260161632-933fc685-fbee-40fd-a2b3-dbe61da77435.png" style="max-width: 720px;" >
 
 ## 😍 Contributors
 

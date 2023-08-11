@@ -9,6 +9,8 @@ type NonJsonTypes =
   | '-infinity'
   | 'nan'
   | 'error'
+  | string // custom types
+
 type MetaType = Record<string, NonJsonTypes>
 type EntryType = {
   type: NonJsonTypes | 'object'
@@ -16,6 +18,19 @@ type EntryType = {
   count: number
   iteration: number
 }
+
+type CustomTypeEntry<T> = {
+  type: string
+  is: (value: unknown) => boolean
+  serialize: (value: T) => string
+  deserialize: (value: string) => T
+}
+
+let customTypeMap = new Map<string, CustomTypeEntry<any>>()
+export function registerCustomType<T>(entry: CustomTypeEntry<T>) {
+  customTypeMap.set(entry.type, entry)
+}
+
 function serialize<T>(data: T): TypedJsonResult {
   if (data === null) return { json: 'null' }
   if (data === undefined) return { json: undefined }
@@ -23,6 +38,7 @@ function serialize<T>(data: T): TypedJsonResult {
   const stack: EntryType[] = []
   const keys: string[] = ['']
   const meta = new Map()
+  const customTypeMapValues = Array.from(customTypeMap.values())
   function replacer(key: string, value: any) {
     function unwindStack() {
       while (stack.length > 0) {
@@ -69,8 +85,18 @@ function serialize<T>(data: T): TypedJsonResult {
         // push error value to stack
         stack.push({ type: 'object', value, count: 3, iteration: 0 })
       } else {
-        count = Object.keys(value).length
-        t = 'object'
+        // check for custom types
+        let customType: CustomTypeEntry<unknown> | undefined
+        if (customTypeMapValues.length > 0) {
+          customType = customTypeMapValues.find(entry => entry.is(value))
+        }
+        if (customType) {
+          t = customType.type
+          value = customType.serialize(value)
+        } else {
+          count = Object.keys(value).length
+          t = 'object'
+        }
       }
       if (t !== 'object') {
         meta.set(metaKey, t)
@@ -128,6 +154,8 @@ function deserialize<T>({ json, meta }: TypedJsonResult): T | null {
 }
 
 function applyMeta<T>(data: T, meta: MetaType) {
+  const customTypeMapValues = Array.from(customTypeMap.values())
+
   for (const key of Object.keys(meta)) {
     applyConversion(data, key.split('.'), meta[key])
   }
@@ -184,6 +212,12 @@ function applyMeta<T>(data: T, meta: MetaType) {
         err.stack = value.stack
         data[key] = err
         break
+      default:
+        // custom types
+        let customType = customTypeMap.get(type)
+        if (customType) {
+          data[key] = customType.deserialize(value)
+        }
     }
   }
 }
@@ -193,14 +227,22 @@ type TypedJsonResult = {
   meta?: MetaType
 }
 type StrigifyParameters = Parameters<typeof JSON.stringify>
-function stringify<T>(data: T, replacer?: StrigifyParameters[1], space?: StrigifyParameters[2]) {
+function stringify<T>(
+  data: T,
+  replacer?: StrigifyParameters[1],
+  space?: StrigifyParameters[2],
+) {
   if (replacer || space) {
     const { json, meta } = serialize<T>(data)
     const jsonObj = deserialize({ json })
-    return JSON.stringify({
-      json: jsonObj,
-      meta,
-    }, replacer, space)
+    return JSON.stringify(
+      {
+        json: jsonObj,
+        meta,
+      },
+      replacer,
+      space,
+    )
   }
   return JSON.stringify(serialize<T>(data))
 }

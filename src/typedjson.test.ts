@@ -1,4 +1,10 @@
-import { deserialize, serialize, stringify } from './typedjson'
+import {
+  deserialize,
+  registerCustomType,
+  serialize,
+  stringify,
+} from './typedjson'
+import Decimal from 'decimal.js'
 
 describe('serialize and deserialize', () => {
   it('works for objects', () => {
@@ -193,7 +199,7 @@ describe('serialize and deserialize', () => {
     expect(deserialize(serialize(undefined)!)).toBeUndefined()
   })
 
-  it.only('works for serialize output arguments', () => {
+  it('works for serialize output arguments', () => {
     const test = {
       bi: BigInt('1021312312412312312313'),
       nan: NaN,
@@ -201,13 +207,15 @@ describe('serialize and deserialize', () => {
         P: Number.POSITIVE_INFINITY,
         N: Number.NEGATIVE_INFINITY,
       },
-      d: new Date(Date.UTC(1979, 0, 10))
+      d: new Date(Date.UTC(1979, 0, 10)),
     }
 
     const strStd = stringify(test)
     const strDbg = stringify(test, null, 2)
 
-    expect(strStd).toBe("{\"json\":\"{\\\"bi\\\":\\\"1021312312412312312313\\\",\\\"nan\\\":\\\"NaN\\\",\\\"inf\\\":{\\\"P\\\":\\\"Infinity\\\",\\\"N\\\":\\\"-Infinity\\\"},\\\"d\\\":\\\"1979-01-10T00:00:00.000Z\\\"}\",\"meta\":{\"bi\":\"bigint\",\"nan\":\"nan\",\"inf.P\":\"infinity\",\"inf.N\":\"-infinity\",\"d\":\"date\"}}")
+    expect(strStd).toBe(
+      '{"json":"{\\"bi\\":\\"1021312312412312312313\\",\\"nan\\":\\"NaN\\",\\"inf\\":{\\"P\\":\\"Infinity\\",\\"N\\":\\"-Infinity\\"},\\"d\\":\\"1979-01-10T00:00:00.000Z\\"}","meta":{"bi":"bigint","nan":"nan","inf.P":"infinity","inf.N":"-infinity","d":"date"}}',
+    )
     expect(strDbg).toBe(`{
   "json": {
     "bi": "1021312312412312312313",
@@ -226,5 +234,25 @@ describe('serialize and deserialize', () => {
     "d": "date"
   }
 }`)
+  })
+})
+describe('custom types', () => {
+  it('works for Decimal type', () => {
+    registerCustomType({
+      type: 'decimal',
+      is: (value: unknown) => value instanceof Decimal,
+      serialize: (value: Decimal) => value.toString(),
+      deserialize: (value: string) => new Decimal(value),
+    })
+
+    const obj = {
+      d: new Decimal('1234567890123456789012345678901234567890'),
+    }
+    const { json, meta } = serialize(obj)
+    expect(json).toEqual('{"d":"1.23456789012345678901234567890123456789e+39"}')
+    expect(meta).toEqual({ d: 'decimal' })
+    const result = deserialize<typeof obj>({ json, meta })
+    expect(result?.d instanceof Decimal).toBe(true)
+    expect(result).toEqual(obj)
   })
 })
