@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 🚀 v0.2.1
+
+- 📦 Update peer dependency to support Remix v2
+
 ## 🚀 v0.2.0
 
 - ✨ Add `registerCustomType` API
