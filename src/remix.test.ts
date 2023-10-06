@@ -25,6 +25,18 @@ describe('stringify Remix data', () => {
         '"__meta__":{"0.bigint":"bigint","1.bigint":"bigint"}}',
     )
   })
+  it('works for this edge case', () => {
+    const edgeCase = {
+      nested: {
+        '': [{}],
+        bigint: BigInt(1),
+      },
+    }
+    const json = stringifyRemix(edgeCase)
+    expect(json).toEqual(
+      '{"nested":{"":[{}],"bigint":"1"},"__meta__":{"nested.bigint":"bigint"}}',
+    )
+  })
 })
 describe('deserialize Remix data', () => {
   it('works for JSON only objects', () => {
