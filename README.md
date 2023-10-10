@@ -172,9 +172,7 @@ type CustomTypeEntry<T> = {
   deserialize: (value: string) => T
 }
 
-export function registerCustomType<T>(entry: CustomTypeEntry<T>) {
-  customTypeMap.set(entry.type, entry)
-}
+export function registerCustomType<T>(entry: CustomTypeEntry<T>)
 ```
 
 ### Usage
