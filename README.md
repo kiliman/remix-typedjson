@@ -92,7 +92,7 @@ get the correct type inference.
 const actionData = useTypedActionData<typeof action>()
 ```
 
-## typeddefer
+## `typeddefer`
 
 ✨ New in v0.3.0
 
@@ -109,8 +109,12 @@ return typeddefer({
 })
 ```
 
+## `<TypedAwait>`
+
 In your route component, use the new `<TypedAwait>` component instead of the
 Remix `<Await>` component
+
+### Usage
 
 ```js
 
