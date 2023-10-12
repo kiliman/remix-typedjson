@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 🚀 v0.3.0
+
+- ✨ Add support for `typeddefer` and `<TypedAwait>` [#20](https://github.com/kiliman/remix-typedjson/issues/20)
+
 ## 🚀 v0.2.2
 
 - 📦 Fix peer dependency to support Remix v2
