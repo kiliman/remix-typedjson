@@ -51,7 +51,7 @@ Make sure your `loader` and `action` use the new declaration format:
 
 ```js
 ❌ export const loader: LoaderFunction = async ({request}) => {}
-❌ export const action: LoaderFunction = async ({request}) => {}
+❌ export const action: ActionFunction = async ({request}) => {}
 
 ✅ export const loader = async ({request}: DataFunctionArgs) => {}
 ✅ export const action = async ({request}: DataFunctionArgs) => {}
