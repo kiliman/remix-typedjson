@@ -4,6 +4,7 @@ export {
   stringifyRemix,
   typedjson,
   useTypedActionData,
+  useTypedCatch,
   useTypedFetcher,
   useTypedLoaderData,
   useTypedRouteLoaderData,
