@@ -1,4 +1,5 @@
 import {
+  Await,
   HtmlMetaDescriptor,
   Params,
   useActionData,
@@ -7,6 +8,7 @@ import {
   useMatches,
   type FetcherWithComponents,
 } from '@remix-run/react'
+import { defer } from '@remix-run/server-runtime'
 
 import type { MetaType } from './typedjson'
 import * as _typedjson from './typedjson'
@@ -19,6 +21,7 @@ export type TypedJsonFunction = <Data extends unknown>(
 export declare type TypedJsonResponse<T extends unknown = unknown> =
   Response & {
     typedjson(): Promise<T>
+    typeddefer(): Promise<T>
   }
 export interface AppLoadContext {
   [key: string]: unknown
@@ -49,6 +52,52 @@ export const typedjson: TypedJsonFunction = (data, init = {}) => {
     ...responseInit,
     headers,
   }) as TypedJsonResponse<typeof data>
+}
+
+export const typeddefer: TypedJsonFunction = (data, init = {}) => {
+  // wrap any Promises in the data with new Promises that will serialize the
+  // resolved data and add the meta to the response
+  Object.entries(data as any).forEach(([key, value]) => {
+    if (value instanceof Promise) {
+      ;(data as any)[key] = value.then(resolvedData => {
+        const { meta } = _typedjson.serialize(resolvedData)
+        if (meta) {
+          ;(resolvedData as any)['$$meta'] = meta
+        }
+        return resolvedData
+      })
+    } else {
+      const { meta } = _typedjson.serialize(data)
+      if (meta) {
+        ;(data as any)['$$meta'] = meta
+      }
+    }
+  })
+
+  let responseInit = typeof init === 'number' ? { status: init } : init
+  return defer(
+    data as Record<string, unknown>,
+    responseInit,
+  ) as unknown as TypedJsonResponse<typeof data>
+}
+
+export type TypedAwaitProps<T> = {
+  resolve: Promise<T>
+  errorElement?: React.ReactNode
+  children: (data: T) => React.ReactNode
+}
+
+export function TypedAwait<T>(props: TypedAwaitProps<T>) {
+  if (!props.children) return null
+  return (
+    <Await {...props}>
+      {data => {
+        if (data === null) return null
+        let deserializedData = deserializeRemix(data as any)
+        return props.children(deserializedData)
+      }}
+    </Await>
+  )
 }
 
 export function useTypedLoaderData<T = AppData>(): UseDataFunctionReturn<T> {
@@ -92,21 +141,20 @@ export function useTypedRouteLoaderData<T = AppData>(
 }
 
 export type RemixSerializedType<T> = {
-  __obj__: T | null
-  __meta__?: MetaType | null
-} & (T | { __meta__?: MetaType })
+  $$obj: T | null
+  $$meta?: MetaType | null
+} & (T | { $$meta?: MetaType })
 
 export function stringifyRemix<T>(data: T) {
   // prevent double JSON stringification
   let { json, meta } = _typedjson.serialize(data)
   if (json && meta) {
     if (json.startsWith('{')) {
-      json = `${json.substring(
-        0,
-        json.length - 1,
-      )},\"__meta__\":${JSON.stringify(meta)}}`
+      json = `${json.substring(0, json.length - 1)},\"$$meta\":${JSON.stringify(
+        meta,
+      )}}`
     } else if (json.startsWith('[')) {
-      json = `{"__obj__":${json},"__meta__":${JSON.stringify(meta)}}`
+      json = `{"$$obj":${json},"$$meta":${JSON.stringify(meta)}}`
     }
   }
   return json
@@ -114,16 +162,16 @@ export function stringifyRemix<T>(data: T) {
 
 export function deserializeRemix<T>(data: RemixSerializedType<T>): T | null {
   if (!data) return data
-  if (data.__obj__) {
+  if (data.$$obj) {
     // handle arrays wrapped in an object
-    return data.__meta__
-      ? _typedjson.applyMeta<T>(data.__obj__, data.__meta__)
-      : data.__obj__
-  } else if (data.__meta__) {
-    // handle object with __meta__ key
+    return data.$$meta
+      ? _typedjson.applyMeta<T>(data.$$obj, data.$$meta)
+      : data.$$obj
+  } else if (data.$$meta) {
+    // handle object with $$meta key
     // remove before applying meta
-    const meta = data.__meta__
-    delete data.__meta__
+    const meta = data.$$meta
+    delete data.$$meta
     return _typedjson.applyMeta<T>(data as T, meta)
   }
   return data as T

@@ -51,8 +51,13 @@ Make sure your `loader` and `action` use the new declaration format:
 
 ```js
 ❌ export const loader: LoaderFunction = async ({request}) => {}
-✅ export const loader = async ({request}: LoaderArgs) => {}
-✅ export async function loader({request}: LoaderArgs) {}
+❌ export const action: LoaderFunction = async ({request}) => {}
+
+✅ export const loader = async ({request}: DataFunctionArgs) => {}
+✅ export const action = async ({request}: DataFunctionArgs) => {}
+
+✅ export async function loader({request}: DataFunctionArgs) {}
+✅ export async function action({request}: DataFunctionArgs) {}
 ```
 
 ### Usage
@@ -85,6 +90,57 @@ get the correct type inference.
 
 ```js
 const actionData = useTypedActionData<typeof action>()
+```
+
+## typeddefer
+
+✨ New in v0.3.0
+
+Replacement for Remix `defer` helper. It also supports the optional `ResponseInit`, so you can return headers, etc.
+
+### Usage
+
+```js
+return typeddefer({
+  fastData: { message: 'This is fast data', today: new Date() },
+  slowData: new Promise(resolve => setTimeout(resolve, 2000)).then(() => {
+    return { message: 'This is slow data', tomorrow: new Date() }
+  }),
+})
+```
+
+In your route component, use the new `<TypedAwait>` component instead of the
+Remix `<Await>` component
+
+```js
+
+export default function DeferRoute() {
+  const { fastData, slowData } = useTypedLoaderData<typeof loader>()
+  return (
+    <main>
+      <h1>Defer Route</h1>
+      <h2>Fast Data</h2>
+      <pre>{JSON.stringify(fastData, null, 2)}</pre>
+      <div>fastData.today is {fastData.today.toLocaleString()}</div>
+      <Suspense fallback={<p>Loading slow data...</p>}>
+        <TypedAwait
+          resolve={slowData}
+          errorElement={<p>Error loading slow data!</p>}
+        >
+          {slowData => (
+            <div>
+              <h2>Slow Data</h2>
+              <pre>{JSON.stringify(slowData, null, 2)}</pre>
+              <div>
+                slowData.tomorrow is {slowData.tomorrow.toLocaleString()}
+              </div>
+            </div>
+          )}
+        </TypedAwait>
+      </Suspense>
+    </main>
+  )
+}
 ```
 
 ## `useTypedRouteLoaderData`

@@ -1,7 +1,9 @@
 export {
+  TypedAwait,
   deserializeRemix,
   redirect,
   stringifyRemix,
+  typeddefer,
   typedjson,
   useTypedActionData,
   useTypedFetcher,
@@ -10,6 +12,7 @@ export {
 } from './remix'
 export type {
   RemixSerializedType,
+  TypedAwaitProps,
   TypedFetcherWithComponents,
   TypedJsonResponse,
   TypedMetaFunction,

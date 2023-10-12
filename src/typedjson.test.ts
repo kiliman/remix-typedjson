@@ -1,10 +1,10 @@
+import Decimal from 'decimal.js'
 import {
   deserialize,
   registerCustomType,
   serialize,
   stringify,
 } from './typedjson'
-import Decimal from 'decimal.js'
 
 describe('serialize and deserialize', () => {
   it('works for objects', () => {
@@ -147,7 +147,9 @@ describe('serialize and deserialize', () => {
     )
     expect(meta).toEqual({ e: 'error' })
     const result = deserialize<typeof obj>({ json, meta })
-    expect(result).toEqual(obj)
+    expect(result!.e instanceof Error).toBe(true)
+    expect(result!.e.name).toBe('Error')
+    expect(result!.e.message).toBe('epic fail')
   })
   it('works for regex', () => {
     const obj = { a: /hello/g }
