@@ -3,6 +3,7 @@ import {
   deserialize,
   registerCustomType,
   serialize,
+  splitKey,
   stringify,
 } from './typedjson'
 
@@ -99,7 +100,7 @@ describe('serialize and deserialize', () => {
     //console.log(result)
     expect(result).toEqual(obj)
   })
-  it.skip('works for paths containing dots', () => {
+  it('works for paths containing dots', () => {
     const obj = {
       'a.1': {
         b: new Set([1, 2]),
@@ -111,7 +112,7 @@ describe('serialize and deserialize', () => {
     //console.log(result)
     expect(result).toEqual(obj)
   })
-  it.skip('works for paths containing backslashes', () => {
+  it('works for paths containing backslashes', () => {
     const obj = {
       'a\\.1': {
         b: new Set([1, 2]),
@@ -237,6 +238,25 @@ describe('serialize and deserialize', () => {
   }
 }`)
   })
+
+  it('works for dotted properties', () => {
+    const obj = {
+      a: {
+        string: '',
+      },
+      'b.c': {
+        // If this is anything that needs special serialization, then it will break
+        date: new Date(Date.UTC(2020, 0, 1)),
+      },
+    }
+    const { json, meta } = serialize(obj)
+    expect(json).toEqual(
+      '{"a":{"string":""},"b.c":{"date":"2020-01-01T00:00:00.000Z"}}',
+    )
+    expect(meta).toEqual({ '[b.c].date': 'date' })
+    const result = deserialize<typeof obj>({ json, meta })
+    expect(result).toEqual(obj)
+  })
 })
 describe('custom types', () => {
   it('works for Decimal type', () => {
@@ -256,5 +276,13 @@ describe('custom types', () => {
     const result = deserialize<typeof obj>({ json, meta })
     expect(result?.d instanceof Decimal).toBe(true)
     expect(result).toEqual(obj)
+  })
+})
+
+describe('helper functions', () => {
+  it('splitKeys handles dotted properties', () => {
+    const keys = splitKey('[b.c].d')
+    console.log()
+    expect(keys).toEqual(['b.c', 'd'])
   })
 })

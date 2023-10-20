@@ -57,6 +57,10 @@ function serialize<T>(data: T): TypedJsonResult {
     if (entry) {
       value = entry.value[key]
     }
+    // handle dotted keys
+    if (key.includes('.')) {
+      key = `[${key}]`
+    }
     let metaKey = `${keys[keys.length - 1]}${key}`
     const valueType = typeof value
     if (valueType === 'object' && value !== null) {
@@ -153,11 +157,36 @@ function deserialize<T>({ json, meta }: TypedJsonResult): T | null {
   return result as T
 }
 
+export const splitKey = (key: string) => {
+  // key is a dotted path
+  // may contain escaped dots which are keys wrapped in []
+  // example [b.c].d => ['b.c', 'd']
+  const keys: string[] = []
+  const parts = key.split('.')
+  for (let i = 0; i < parts.length; i++) {
+    if (parts[i].startsWith('[')) {
+      let k = parts[i].substring(1)
+      let j = i + 1
+      while (!parts[j].endsWith(']')) {
+        k += `.${parts[j]}`
+        j++
+      }
+      k += `.${parts[j].slice(0, -1)}`
+      keys.push(k)
+      i = j
+    } else {
+      keys.push(parts[i])
+    }
+  }
+  return keys
+}
+
 function applyMeta<T>(data: T, meta: MetaType) {
   const customTypeMapValues = Array.from(customTypeMap.values())
 
   for (const key of Object.keys(meta)) {
-    applyConversion(data, key.split('.'), meta[key])
+    const keys = splitKey(key)
+    applyConversion(data, keys, meta[key])
   }
   return data
 
@@ -260,6 +289,6 @@ const typedjson = {
   applyMeta,
 }
 
-export { serialize, deserialize, stringify, parse, applyMeta }
+export { applyMeta, deserialize, parse, serialize, stringify }
 export type { MetaType, TypedJsonResult }
 export default typedjson
