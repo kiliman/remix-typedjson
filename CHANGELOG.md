@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 🚀 v0.3.1
+
+- 🐛 Add support for dotted properties in serialized object [#22](https://github.com/kiliman/remix-typedjson/issues/22)
+
 ## 🚀 v0.3.0
 
 - ✨ Add support for `typeddefer` and `<TypedAwait>` [#20](https://github.com/kiliman/remix-typedjson/issues/20)

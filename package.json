@@ -1,6 +1,6 @@
 {
   "name": "remix-typedjson",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "This package is a replacement for superjson to use in your Remix app. It handles a subset of types that `superjson` supports, but is faster and smaller.",
   "browser": "/dist/esm/index.js",
   "main": "./dist/index.js",
