@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 🚀 v0.4.0
+
+- ✨ Add support for `key` in `useTypedFetcher` [#35](https://github.com/kiliman/remix-typedjson/issues/35)
+- 🔥 Deprecate `TypedMetaFunction` since it didn't work anyway
+
 ## 🚀 v0.3.1
 
 - 🐛 Add support for dotted properties in serialized object [#22](https://github.com/kiliman/remix-typedjson/issues/22)
