@@ -1,6 +1,6 @@
 import {
   Await,
-  HtmlMetaDescriptor,
+  MetaDescriptor,
   Params,
   useActionData,
   useFetcher,
@@ -214,12 +214,12 @@ export interface RouteData {
 }
 
 export interface LoaderFunction {
-  (args: DataFunctionArgs):
-    | Promise<Response>
-    | Response
-    | Promise<AppData>
-    | AppData
+  (
+    args: DataFunctionArgs,
+  ): Promise<Response> | Response | Promise<AppData> | AppData
 }
+
+/** @deprecated */
 export interface TypedMetaFunction<
   Loader extends LoaderFunction | unknown = unknown,
   ParentsLoaders extends Record<string, LoaderFunction> = {},
@@ -233,5 +233,5 @@ export interface TypedMetaFunction<
     } & RouteData
     params: Params
     location: Location
-  }): HtmlMetaDescriptor
+  }): MetaDescriptor
 }

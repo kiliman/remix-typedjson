@@ -179,7 +179,10 @@ In order to return a `redirect`, you will need to import the `redirect` function
 
 However, you can also `throw redirect()` and you can use the original `redirect` function from Remix.
 
-## `TypedMetaFunction`
+## ~~`TypedMetaFunction`~~
+
+🔥 Removed in v0.4.0 since it didn't actually work correctly. Will be replaced
+with a `typedmeta` wrapper function in next release
 
 You can now get typed arguments for both `data` and `parentsData` from your `meta`
 function export. Based on [new feature coming to Remix](https://github.com/remix-run/remix/pull/4022)
