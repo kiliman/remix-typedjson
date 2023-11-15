@@ -161,13 +161,15 @@ const rootData = useTypedRouteLoaderData<typeof rootLoader>('root')
 
 ## `useTypedFetcher`
 
+✨ Add support for `key` in v0.4.0
+
 Replacement for Remix `useFetcher`. Use the generic `<typeof loader|action>` to
 get the correct type inference for the `fetcher.data` property.
 
 ### Usage
 
-```js
-const fetcher = useTypedFetcher<typeof action>()
+```ts
+const fetcher = useTypedFetcher<typeof action>({ key: 'abc' })
 fetcher.data // data property is fully typed
 ```
 

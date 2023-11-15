@@ -121,8 +121,13 @@ export type TypedFetcherWithComponents<T> = Omit<
 > & {
   data: UseDataFunctionReturn<T>
 }
-export function useTypedFetcher<T>(): TypedFetcherWithComponents<T> {
-  const fetcher = useFetcher()
+
+type FetcherArgs = Parameters<typeof useFetcher>[0]
+
+export function useTypedFetcher<T>(
+  opts?: FetcherArgs,
+): TypedFetcherWithComponents<T> {
+  const fetcher = useFetcher(opts)
   if (fetcher.data) {
     const newData = deserializeRemix<T>(fetcher.data as RemixSerializedType<T>)
     fetcher.data = newData ?? undefined
