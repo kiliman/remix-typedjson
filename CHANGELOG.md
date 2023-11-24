@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 🚀 v0.4.1
+
+- ↩️ Restore missing Remix peer dependencies [#37](https://github.com/kiliman/remix-typedjson/issues/37)
+
 ## 🚀 v0.4.0
 
 - ✨ Add support for `key` in `useTypedFetcher` [#35](https://github.com/kiliman/remix-typedjson/issues/35)
