@@ -53,11 +53,11 @@ Make sure your `loader` and `action` use the new declaration format:
 ❌ export const loader: LoaderFunction = async ({request}) => {}
 ❌ export const action: ActionFunction = async ({request}) => {}
 
-✅ export const loader = async ({request}: DataFunctionArgs) => {}
-✅ export const action = async ({request}: DataFunctionArgs) => {}
+✅ export const loader = async ({request}: LoaderFunctionArgs) => {}
+✅ export const action = async ({request}: ActionFunctionArgs) => {}
 
-✅ export async function loader({request}: DataFunctionArgs) {}
-✅ export async function action({request}: DataFunctionArgs) {}
+✅ export async function loader({request}: LoaderFunctionArgs) {}
+✅ export async function action({request}: ActionFunctionArgs) {}
 ```
 
 ### Usage
